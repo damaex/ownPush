@@ -37,6 +37,6 @@ before_build:
   - cmd: cmake .. -G %generator%
 
 build:
-  project: c:\projects\cmake-init\build\ownPush.sln
+  project: c:\projects\ownPush\build\ownPush.sln
   verbosity: minimal
   parallel: true
