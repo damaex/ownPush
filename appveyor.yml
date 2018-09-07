@@ -1,3 +1,14 @@
+version: '{build}'
+
+branches:
+  only:
+  - master
+
+image:
+- Visual Studio 2013
+- Visual Studio 2015
+- Visual Studio 2017
+
 platform:
   - Win32
   - x64
@@ -7,15 +18,25 @@ configuration:
   - Release
 
 init:
+  - set arch=
+  - if "%arch%"=="Win64" ( set arch= Win64)
+  - echo %arch%
+  - echo %APPVEYOR_BUILD_WORKER_IMAGE%
+  - if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" ( set generator="Visual Studio 15 2017%arch%" )
+  - if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2015" ( set generator="Visual Studio 14 2015%arch%" )
+  - if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2013" ( set generator="Visual Studio 12 2013%arch%" )
+  - echo %generator%
+
+before_build:
   - cmd: cmake --version
   - cmd: msbuild /version
-
-build_script:
   - cmd: cd C:\projects\ownPush
   - cmd: git submodule update --init --recursive
   - cmd: mkdir build
   - cmd: cd build
-  - cmd: if "%platform%"=="Win32" set CMAKE_GENERATOR=Visual Studio 15 2017
-  - cmd: if "%platform%"=="x64" set CMAKE_GENERATOR=Visual Studio 15 2017 Win64
-  - cmd: cmake -G"%CMAKE_GENERATOR%" ..
-  - cmd: msbuild ownPush.sln /p:Configuration=%configuration% /p:Platform=%platform%
+  - cmd: cmake .. -G %generator%
+
+build:
+  project: c:\projects\cmake-init\build\ownPush.sln
+  verbosity: minimal
+  parallel: true

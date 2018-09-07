@@ -2,15 +2,12 @@
 # project configuration #
 #########################
 
+# C++ project
 language: cpp
-dist: trusty
 
-addons:
-  apt:
-    packages:
-      - g++-6
-    sources: &sources
-      - ubuntu-toolchain-r-test
+dist: trusty
+sudo: required
+group: edge
 
 ################
 # build matrix #
