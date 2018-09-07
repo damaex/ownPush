@@ -6,7 +6,7 @@
 
 #define OWNPUSH_PORT 7951
 
-class PushServer : public Handler, public std::enable_shared_from_this<Handler> {
+class PushServer : public IHandler, public std::enable_shared_from_this<IHandler> {
 private:
     asio::ip::tcp::acceptor p_acceptor;
     std::shared_ptr<ILog> p_log;

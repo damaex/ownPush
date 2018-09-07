@@ -1,10 +1,10 @@
-#ifndef OWNPUSH_HANDLER_H
-#define OWNPUSH_HANDLER_H
+#ifndef OWNPUSH_IHANDLER_H
+#define OWNPUSH_IHANDLER_H
 
 #include <string>
 #include <set>
 
-class Handler {
+class IHandler {
 public:
     virtual void incomingPushData(const std::string &data) = 0;
 
@@ -15,4 +15,4 @@ public:
     virtual bool pushMessage(const std::string &id, const std::string &message) = 0;
 };
 
-#endif //OWNPUSH_HANDLER_H
+#endif //OWNPUSH_IHANDLER_H

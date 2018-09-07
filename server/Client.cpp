@@ -12,7 +12,7 @@ void Client::doRead() {
                                    });
 }
 
-Client::Client(asio::ip::tcp::socket socket, std::shared_ptr<Handler> handler, std::shared_ptr<ILog> log)
+Client::Client(asio::ip::tcp::socket socket, std::shared_ptr<IHandler> handler, std::shared_ptr<ILog> log)
         : p_socket(std::move(socket)), p_handler(std::move(handler)), p_log(std::move(log)) {}
 
 void Client::start() {

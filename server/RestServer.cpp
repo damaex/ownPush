@@ -3,7 +3,7 @@
 
 using json = nlohmann::json;
 
-RestServer::RestServer(std::shared_ptr<Handler> handler, std::shared_ptr<ILog> log)
+RestServer::RestServer(std::shared_ptr<IHandler> handler, std::shared_ptr<ILog> log)
         : p_handler(handler), p_log(log), p_settings(log) {
     this->p_httpServer.config.port = this->p_settings.getRestPort();
     this->init();

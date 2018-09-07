@@ -2,7 +2,7 @@
 #define OWNPUSH_RESTSERVER_H
 
 #include "Settings.h"
-#include "Handler.h"
+#include "IHandler.h"
 #include <server_http.hpp>
 
 using HttpServer = SimpleWeb::Server<SimpleWeb::HTTP>;
@@ -10,7 +10,7 @@ using HttpServer = SimpleWeb::Server<SimpleWeb::HTTP>;
 class RestServer {
 private:
     Settings p_settings;
-    std::shared_ptr<Handler> p_handler;
+    std::shared_ptr<IHandler> p_handler;
     std::shared_ptr<ILog> p_log;
     HttpServer p_httpServer;
     std::thread p_serverThread;
@@ -26,7 +26,7 @@ private:
     std::string createAnswer(bool isOK);
 
 public:
-    explicit RestServer(std::shared_ptr<Handler> handler, std::shared_ptr<ILog> log);
+    explicit RestServer(std::shared_ptr<IHandler> handler, std::shared_ptr<ILog> log);
 
     void start();
 
