@@ -1,16 +1,199 @@
+#########################
+# project configuration #
+#########################
+
 language: cpp
 dist: trusty
 
-os:
-  - linux
-  - osx
+addons:
+  apt:
+    packages:
+      - g++-6
+    sources: &sources
+      - ubuntu-toolchain-r-test
 
-compiler:
-  - gcc
-  - clang
+################
+# build matrix #
+################
+
+matrix:
+  include:
+  
+  # OSX / Clang
+
+  - os: osx
+    osx_image: xcode6.4
+
+  - os: osx
+    osx_image: xcode7.3
+
+  - os: osx
+    osx_image: xcode8
+
+  - os: osx
+    osx_image: xcode8.1
+
+  - os: osx
+    osx_image: xcode8.2
+
+  - os: osx
+    osx_image: xcode8.3
+
+  - os: osx
+    osx_image: xcode9
+
+  - os: osx
+    osx_image: xcode9.1
+
+  - os: osx
+    osx_image: xcode9.2
+
+  - os: osx
+    osx_image: xcode9.3
+
+  - os: osx
+    osx_image: xcode9.4
+
+  # Linux / GCC
+
+  - os: linux
+    compiler: gcc
+    env: COMPILER=g++-4.9
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test']
+        packages: ['g++-4.9']
+
+  - os: linux
+    compiler: gcc
+    env: COMPILER=g++-5
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test']
+        packages: ['g++-5']
+
+  - os: linux
+    compiler: gcc
+    env: COMPILER=g++-6
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test']
+        packages: ['g++-6']
+
+  - os: linux
+    compiler: gcc
+    env: COMPILER=g++-7
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test']
+        packages: ['g++-7']
+
+  - os: linux
+    compiler: gcc
+    env: COMPILER=g++-8
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test']
+        packages: ['g++-8']
+
+  - os: linux
+    compiler: gcc
+    env:
+      - COMPILER=g++-8
+      - CXXFLAGS=-std=c++17
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test']
+        packages: ['g++-8']
+
+  # Linux / Clang
+
+  - os: linux
+    compiler: clang
+    env: COMPILER=clang++-3.5
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.5']
+        packages: ['g++-6', 'clang-3.5']
+
+  - os: linux
+    compiler: clang
+    env: COMPILER=clang++-3.6
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.6']
+        packages: ['g++-6', 'clang-3.6']
+
+  - os: linux
+    compiler: clang
+    env: COMPILER=clang++-3.7
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
+        packages: ['g++-6', 'clang-3.7']
+
+  - os: linux
+    compiler: clang
+    env: COMPILER=clang++-3.8
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test']
+        packages: ['g++-6', 'clang-3.8']
+
+  - os: linux
+    compiler: clang
+    env: COMPILER=clang++-3.9
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test']
+        packages: ['g++-6', 'clang-3.9']
+
+  - os: linux
+    compiler: clang
+    env: COMPILER=clang++-4.0
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-4.0']
+        packages: ['g++-6', 'clang-4.0']
+
+  - os: linux
+    compiler: clang
+    env: COMPILER=clang++-5.0
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
+        packages: ['g++-6', 'clang-5.0']
+
+  - os: linux
+    compiler: clang
+    env: COMPILER=clang++-6.0
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
+        packages: ['g++-6', 'clang-6.0']
+
+  - os: linux
+    compiler: clang
+    env:
+      - COMPILER=clang++-6.0
+      - CXXFLAGS=-std=c++1z
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
+        packages: ['g++-6', 'clang-6.0']
+
+################
+# build script #
+################
 
 script:
+  # make sure CXX is correctly set
+  - if [[ "${COMPILER}" != "" ]]; then export CXX=${COMPILER}; fi
+  # show OS/compiler version
+  - uname -a
+  - $CXX --version
+  # get the submodules
   - git submodule update --init --recursive
-  - mkdir build
-  - cd build
-  - cmake .. && make
+  # compile
+  - mkdir -p build && cd build
+  - cmake .. && cmake --build . --config Release

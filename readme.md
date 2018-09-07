@@ -1,7 +1,7 @@
 # ownPush
 
 [![Build Status](https://travis-ci.org/damaex/ownpush.svg?branch=master)](https://travis-ci.org/damaex/ownpush)
-[![Build status](https://ci.appveyor.com/api/projects/status/qwkkx09ku482ndsc/branch/master?svg=true)](https://ci.appveyor.com/project/damaex/ownpush/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/j8ug21bncgq25dws/branch/master?svg=true)](https://ci.appveyor.com/project/damaex/ownpush/branch/master)
 
 ## features
 - [x] own [data model](data.md)
