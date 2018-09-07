@@ -11,7 +11,7 @@ init:
   - cmd: msbuild /version
 
 build_script:
-  - cmd: cd C:\projects\service
+  - cmd: cd C:\projects\ownPush
   - cmd: git submodule update --init --recursive
   - cmd: mkdir build
   - cmd: cd build
