@@ -5,7 +5,7 @@
 #include <memory>
 
 #define STANDARD_REST_NAME "root"
-#define STANDARD_REST_PASSWORD "root"
+#define STANDARD_REST_PASSWORD "toor"
 #define STANDARD_REST_PORT 7952
 
 class Settings {
