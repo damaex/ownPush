@@ -1,7 +1,7 @@
 #include "PushServer.h"
 
 PushServer::PushServer(asio::io_context &io_context, std::shared_ptr<ILog> log)
-        : p_acceptor(io_context, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), OWNPUSH_PORT)), p_log(log) {}
+        : p_acceptor(io_context, asio::ip::tcp::endpoint(asio::ip::tcp::v6(), OWNPUSH_PORT)), p_log(log) {}
 
 void PushServer::incomingPushData(const std::string &data) {
     this->p_log->writeLine("INC: " + data);
