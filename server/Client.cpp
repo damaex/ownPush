@@ -2,7 +2,7 @@
 
 void Client::doRead() {
     auto self(shared_from_this());
-	auto reply = new char[BUFFER_SIZE];
+    auto reply = new char[BUFFER_SIZE];
 
     this->p_socket.async_read_some(asio::buffer(reply, BUFFER_SIZE),
                                    [this, self, reply](std::error_code ec, std::size_t length) {
@@ -10,10 +10,10 @@ void Client::doRead() {
                                            std::string str(reply, length);
                                            this->p_handler->incomingPushData(self, str);
 
-										   this->doRead();
+                                           this->doRead();
                                        }
 
-									   delete[] reply;
+                                       delete[] reply;
                                    });
 }
 
