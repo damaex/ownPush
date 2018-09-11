@@ -14,9 +14,9 @@ namespace ownPushClient
 
         private void WriteToLog(string value)
         {
-            if (InvokeRequired)
+            if (this.InvokeRequired)
             {
-                Invoke(new Action<string>(WriteToLog), new object[] { value });
+                this.BeginInvoke(new Action<string>(WriteToLog), new object[] { value });
                 return;
             }
 
@@ -51,7 +51,13 @@ namespace ownPushClient
 
         private void OwnPushHandler_ConnectionStateChanged(object sender, bool connected)
         {
-            if(connected)
+            if (this.InvokeRequired)
+            {
+                this.BeginInvoke(new Action<object, bool>(OwnPushHandler_ConnectionStateChanged), new object[] { sender, connected });
+                return;
+            }
+
+            if (connected)
             {
                 ButtonEnabler(true);
             }

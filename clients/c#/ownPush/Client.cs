@@ -37,6 +37,9 @@ namespace ownPush
         public delegate void LogHandler(object sender, string data);
         public event LogHandler WriteToLog;
 
+        public delegate void ConnectionStateHandler(object sender, bool connected);
+        public event ConnectionStateHandler ConnectionStateChanged;
+
         public Client(string host)
         {
             p_host = host;
@@ -63,6 +66,7 @@ namespace ownPush
             {
                 p_client.Shutdown(SocketShutdown.Both);
                 p_client.Close();
+                ConnectionStateChanged?.Invoke(this, p_client.Connected);
             }
         }
 
@@ -94,6 +98,8 @@ namespace ownPush
 
             // Signal that the connection has been made.  
             connectDone.Set();
+
+            ConnectionStateChanged?.Invoke(this, p_client.Connected);
         }
 
         private void Receive(Socket client)
@@ -123,6 +129,13 @@ namespace ownPush
                 // from the asynchronous state object.  
                 StateObject state = (StateObject)ar.AsyncState;
                 Socket client = state.workSocket;
+
+                if (!client.Connected || client.Available == 0)
+                {
+                    // Connection is terminated, either by force or willingly
+                    ConnectionStateChanged?.Invoke(this, false);
+                    return;
+                }
 
                 // Read data from the remote device.  
                 int bytesRead = client.EndReceive(ar);

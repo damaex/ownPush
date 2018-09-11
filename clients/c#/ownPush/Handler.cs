@@ -23,7 +23,13 @@ namespace ownPush
             p_ownPushClient = new Client(host);
             p_ownPushClient.DataReceived += ownPushClient_dataReceived;
             p_ownPushClient.ConnectionEstablished += ownPushClient_connectionEstablished;
+            p_ownPushClient.ConnectionStateChanged += ownPushClient_ConnectionStateChanged;
             p_ownPushClient.WriteToLog += ownPushClient_WriteToLog;
+        }
+
+        private void ownPushClient_ConnectionStateChanged(object sender, bool connected)
+        {
+            ConnectionStateChanged?.Invoke(sender, connected);
         }
 
         private void ownPushClient_WriteToLog(object sender, string data)
