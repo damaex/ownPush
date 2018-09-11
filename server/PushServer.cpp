@@ -1,10 +1,22 @@
 #include "PushServer.h"
+#include <algorithm>
 
 PushServer::PushServer(asio::io_context &io_context, std::shared_ptr<ILog> log)
         : p_acceptor(io_context, asio::ip::tcp::endpoint(asio::ip::tcp::v6(), OWNPUSH_PORT)), p_log(log) {}
 
-void PushServer::incomingPushData(const std::string &data) {
-    this->p_log->writeLine("INC: " + data);
+void PushServer::incomingPushData(std::shared_ptr<IClient> cl, const std::string &data) {
+	try {
+		json incData = json::parse(data);
+		ConnectionObject co = incData;
+
+		this->p_log->writeLine("INC: " + incData.dump());
+		this->handleIncoming(cl, co);
+	}
+	catch (std::exception &e) {
+		//incorrect data
+		this->p_log->exception(e);
+		this->removeClient(cl);
+	}
 }
 
 void PushServer::doAccept() {
@@ -17,6 +29,21 @@ void PushServer::doAccept() {
 
         this->doAccept();
     });
+}
+
+void PushServer::removeClient(std::shared_ptr<IClient> cl) {
+	cl->stop();
+	this->p_clientList.erase(std::remove(this->p_clientList.begin(), this->p_clientList.end(), cl), this->p_clientList.end());
+}
+
+void PushServer::handleIncoming(std::shared_ptr<IClient> cl, const ConnectionObject &co) {
+	switch (co.purpose)
+	{
+	case ConnectionObject::Purpose::PERROR:
+		break;
+	default:
+		break;
+	}
 }
 
 std::set<std::string> PushServer::getConnectedClients() {

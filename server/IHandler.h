@@ -1,12 +1,13 @@
 #ifndef OWNPUSH_IHANDLER_H
 #define OWNPUSH_IHANDLER_H
 
-#include <string>
+#include "IClient.h"
+#include <memory>
 #include <set>
 
 class IHandler {
 public:
-    virtual void incomingPushData(const std::string &data) = 0;
+    virtual void incomingPushData(std::shared_ptr<IClient> cl, const std::string &data) = 0;
 
     virtual std::set<std::string> getConnectedClients() = 0;
 

@@ -5,22 +5,24 @@
 #include "IHandler.h"
 #include "ILog.h"
 
-class Client : public std::enable_shared_from_this<Client> {
-private:
-    asio::ip::tcp::socket p_socket;
-    std::shared_ptr<IHandler> p_handler;
-    std::shared_ptr<ILog> p_log;
+#define BUFFER_SIZE	1024
 
-    void doRead();
+class Client : public IClient, public std::enable_shared_from_this<IClient> {
+private:
+	asio::ip::tcp::socket p_socket;
+	std::shared_ptr<IHandler> p_handler;
+	std::shared_ptr<ILog> p_log;
+
+	void doRead();
 
 public:
-    explicit Client(asio::ip::tcp::socket socket, std::shared_ptr<IHandler> handler, std::shared_ptr<ILog> log);
+	explicit Client(asio::ip::tcp::socket socket, std::shared_ptr<IHandler> handler, std::shared_ptr<ILog> log);
 
-    void start();
+	void start();
 
-    void stop();
+	void stop();
 
-    void doWrite(const std::string &data);
+	void doWrite(const std::string &data);
 };
 
 #endif //OWNPUSH_CLIENT_H

@@ -7,6 +7,8 @@ include_directories(${CMAKE_SOURCE_DIR}/external/inih)
 
 set(server_FILES
         Client.cpp Client.h
+		ConnectionObject.h ConnectionObject.cpp
+		IClient.h
         IHandler.h
         Log.h ILog.h
         PushServer.cpp PushServer.h

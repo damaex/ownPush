@@ -2,13 +2,18 @@
 
 void Client::doRead() {
     auto self(shared_from_this());
-    std::vector<char> data;
-    this->p_socket.async_read_some(asio::buffer(data),
-                                   [this, self, data](std::error_code ec, std::size_t length) {
+	auto reply = new char[BUFFER_SIZE];
+
+    this->p_socket.async_read_some(asio::buffer(reply, BUFFER_SIZE),
+                                   [this, self, reply](std::error_code ec, std::size_t length) {
                                        if (!ec) {
-                                           std::string str(data.begin(), data.end());
-                                           this->p_handler->incomingPushData(str);
+                                           std::string str(reply, length);
+                                           this->p_handler->incomingPushData(self, str);
+
+										   this->doRead();
                                        }
+
+									   delete[] reply;
                                    });
 }
 
@@ -28,7 +33,7 @@ void Client::doWrite(const std::string &data) {
     asio::async_write(this->p_socket, asio::const_buffer(data.c_str(), data.size()),
                       [this, self](std::error_code ec, std::size_t /*length*/) {
                           if (!ec) {
-                              //TODO what to do next, basically nothing
+                              //TODO what to do next, basically nothing, wait for response
                           }
                       });
 }

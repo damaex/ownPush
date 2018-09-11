@@ -3,6 +3,7 @@
 
 #include "Client.h"
 #include "RestServer.h"
+#include "ConnectionObject.h"
 
 #define OWNPUSH_PORT 7951
 
@@ -15,6 +16,10 @@ private:
 
     void doAccept();
 
+    void removeClient(std::shared_ptr<IClient> cl);
+
+	void handleIncoming(std::shared_ptr<IClient> cl, const ConnectionObject &co);
+
 public:
     explicit PushServer(asio::io_context &io_context, std::shared_ptr<ILog> log);
 
@@ -22,7 +27,7 @@ public:
 
     void stop();
 
-    void incomingPushData(const std::string &data) override;
+    void incomingPushData(std::shared_ptr<IClient> cl, const std::string &data) override;
 
     std::set<std::string> getConnectedClients() override;
 
