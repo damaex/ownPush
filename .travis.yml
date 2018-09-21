@@ -16,10 +16,7 @@ group: edge
 matrix:
   include:
   
-  # OSX / Clang
-
-  - os: osx
-    osx_image: xcode6.4
+  # OSX / Clan
 
   - os: osx
     osx_image: xcode8
