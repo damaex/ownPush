@@ -49,7 +49,13 @@ namespace ownPush
 
         private void ownPushClient_dataReceived(object sender, string data)
         {
-            ConnectionObject co = JsonConvert.DeserializeObject<ConnectionObject>(data);
+            WriteToLog?.Invoke(sender, data);
+            handleData(JsonConvert.DeserializeObject<ConnectionObject>(data));
+        }
+
+        private void handleData(ConnectionObject co)
+        {
+
         }
 
         private void ownPushClient_connectionEstablished(object sender)

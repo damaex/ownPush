@@ -18,7 +18,7 @@ void Client::doRead() {
 }
 
 Client::Client(asio::ip::tcp::socket socket, std::shared_ptr<IHandler> handler, std::shared_ptr<ILog> log)
-        : p_socket(std::move(socket)), p_handler(std::move(handler)), p_log(std::move(log)) {}
+        : IClient(std::move(log)), p_socket(std::move(socket)), p_handler(std::move(handler)) {}
 
 void Client::start() {
     this->doRead();
@@ -32,8 +32,10 @@ void Client::doWrite(const std::string &data) {
     auto self(shared_from_this());
     asio::async_write(this->p_socket, asio::const_buffer(data.c_str(), data.size()),
                       [this, self](std::error_code ec, std::size_t /*length*/) {
-                          if (!ec) {
-                              //TODO what to do next, basically nothing, wait for response
+                          if (ec) {                              
+							  self->getLog()->writeLine(ec.message());
                           }
+
+						  //TODO what to do next, basically nothing, wait for response
                       });
 }

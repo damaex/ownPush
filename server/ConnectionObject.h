@@ -18,7 +18,7 @@ public:
 	};
 
 	ConnectionObject() = default;
-	ConnectionObject(Purpose pur, std::string d) : purpose(pur), data(d) {}
+	ConnectionObject(Purpose pur, const std::string &d) : purpose(pur), data(d) {}
 
 	Purpose purpose = PERROR;
 	std::string data;

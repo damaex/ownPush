@@ -3,7 +3,6 @@
 
 #include <asio.hpp>
 #include "IHandler.h"
-#include "ILog.h"
 
 #define BUFFER_SIZE	1024
 
@@ -11,7 +10,6 @@ class Client : public IClient, public std::enable_shared_from_this<IClient> {
 private:
 	asio::ip::tcp::socket p_socket;
 	std::shared_ptr<IHandler> p_handler;
-	std::shared_ptr<ILog> p_log;
 
 	void doRead();
 

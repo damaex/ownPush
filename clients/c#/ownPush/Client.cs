@@ -88,6 +88,7 @@ namespace ownPush
                 // Complete the connection.  
                 client.EndConnect(ar);
                 Log("Socket connected to " + client.RemoteEndPoint.ToString());
+                Receive(client);
 
                 ConnectionEstablished?.Invoke(this);
             }
@@ -157,6 +158,7 @@ namespace ownPush
                     }
                     // Signal that all bytes have been received.  
                     receiveDone.Set();
+                    Receive(client);
                 }
             }
             catch (Exception e)

@@ -1,4 +1,6 @@
 #include "PushServer.h"
+#include "exceptions/ClientIDAlreadySetException.h"
+#include "exceptions/UnknownCommandException.h"
 #include <algorithm>
 
 PushServer::PushServer(asio::io_context &io_context, std::shared_ptr<ILog> log)
@@ -37,12 +39,37 @@ void PushServer::removeClient(std::shared_ptr<IClient> cl) {
 }
 
 void PushServer::handleIncoming(std::shared_ptr<IClient> cl, const ConnectionObject &co) {
-    switch (co.purpose)
-    {
-    case ConnectionObject::Purpose::PERROR:
-        break;
-    default:
-        break;
+    switch (co.purpose) {
+        case ConnectionObject::Purpose::PREQUEST: {
+            if (cl->hasClientID()) {
+                throw ClientIDAlreadySetException();
+            }
+
+            cl->setClientID(co.data);
+            
+            //generate challenge
+            std::string challenge = this->p_challengeHandler.createChallenge();
+
+            //set challenge to client
+            cl->setChallenge(challenge);
+
+            //generate answer
+            ConnectionObject answer(ConnectionObject::Purpose::PCHALLENGE, challenge);
+            json toSend = answer;
+
+            this->p_log->writeLine("OUT: " + toSend.dump());
+
+            //send answer
+            cl->doWrite(toSend.dump());
+
+            break;
+        }
+        case ConnectionObject::Purpose::PERROR: {
+            break;
+        }
+        default: {
+            throw UnknownCommandException();
+        }
     }
 }
 

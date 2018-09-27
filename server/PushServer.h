@@ -4,6 +4,7 @@
 #include "Client.h"
 #include "RestServer.h"
 #include "ConnectionObject.h"
+#include "ChallengeHandler.h"
 
 #define OWNPUSH_PORT 7951
 
@@ -13,6 +14,7 @@ private:
     std::shared_ptr<ILog> p_log;
     std::vector<std::shared_ptr<Client>> p_clientList;
     std::shared_ptr<RestServer> p_restServer;
+    ChallengeHandler p_challengeHandler;
 
     void doAccept();
 
