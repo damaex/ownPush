@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ownPush
+﻿namespace ownPush
 {
     enum Purpose
     {
+        ERROR = -1,
         REQUEST = 0,
         CHALLENGE = 1,
-        LOGIN = 2
+        LOGIN = 2,
+        PUSH = 3,
+        RESET = 4
     }
 
     class ConnectionObject
@@ -23,5 +20,10 @@ namespace ownPush
 
         public Purpose purpose;
         public string data;
+
+        public override string ToString()
+        {
+            return "Purpose: " + purpose + " | " + data;
+        }
     }
 }

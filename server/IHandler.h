@@ -9,6 +9,8 @@ class IHandler {
 public:
     virtual void incomingPushData(std::shared_ptr<IClient> cl, const std::string &data) = 0;
 
+    virtual void removeClient(std::shared_ptr<IClient> cl) = 0;
+
     virtual std::set<std::string> getConnectedClients() = 0;
 
     virtual bool checkConnectedClient(const std::string &id) = 0;

@@ -62,6 +62,7 @@
             this.txtSecret.Name = "txtSecret";
             this.txtSecret.Size = new System.Drawing.Size(440, 20);
             this.txtSecret.TabIndex = 5;
+            this.txtSecret.Text = "YOgCN3fU77FykBmWEnRIOBXmN9hEoGD4GRcpA7pX8Mo3TgxCYeddkLPkrJ8v8mz6";
             // 
             // txtClientID
             // 
@@ -69,7 +70,7 @@
             this.txtClientID.Name = "txtClientID";
             this.txtClientID.Size = new System.Drawing.Size(440, 20);
             this.txtClientID.TabIndex = 4;
-            this.txtClientID.Text = "testMe";
+            this.txtClientID.Text = "004917653193751";
             // 
             // txtIP
             // 
@@ -115,7 +116,7 @@
             this.btnDisconnect.TabIndex = 1;
             this.btnDisconnect.Text = "Disconnect";
             this.btnDisconnect.UseVisualStyleBackColor = true;
-            this.btnDisconnect.Click += new System.EventHandler(this.btnDisconnect_Click);
+            this.btnDisconnect.Click += new System.EventHandler(this.BtnDisconnect_Click);
             // 
             // btnConnect
             // 
@@ -125,7 +126,7 @@
             this.btnConnect.TabIndex = 2;
             this.btnConnect.Text = "Connect";
             this.btnConnect.UseVisualStyleBackColor = true;
-            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
+            this.btnConnect.Click += new System.EventHandler(this.BtnConnect_Click);
             // 
             // txtLog
             // 

@@ -23,7 +23,7 @@ namespace ownPushClient
             txtLog.Text += value + Environment.NewLine;
         }
 
-        private void btnConnect_Click(object sender, EventArgs e)
+        private void BtnConnect_Click(object sender, EventArgs e)
         {
             btnConnect.Enabled = false;
 
@@ -68,7 +68,7 @@ namespace ownPushClient
             }
         }
 
-        private void btnDisconnect_Click(object sender, EventArgs e)
+        private void BtnDisconnect_Click(object sender, EventArgs e)
         {
             btnDisconnect.Enabled = false;
             if (ownPushHandler != null)

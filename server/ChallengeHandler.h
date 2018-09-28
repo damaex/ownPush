@@ -6,6 +6,8 @@
 class ChallengeHandler {
 public:
 	std::string createChallenge();
+
+	bool checkLogin(const std::string &challenge, const std::string &clientID, const std::string &login);
 };
 
 #endif //OWNPUSH_CHALLENGEHANDLER_H

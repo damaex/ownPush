@@ -7,10 +7,20 @@ void Client::doRead() {
     this->p_socket.async_read_some(asio::buffer(reply, BUFFER_SIZE),
                                    [this, self, reply](std::error_code ec, std::size_t length) {
                                        if (!ec) {
-                                           std::string str(reply, length);
-                                           this->p_handler->incomingPushData(self, str);
+                                            std::string str(reply, length);
+                                            size_t data_length = self->stosize(str.substr(0, str.find(':')));
+                                            std::string data = str.substr(str.find(':') + 1);
 
-                                           this->doRead();
+                                            if(data.length() == data_length)
+                                                this->p_handler->incomingPushData(self, data);
+
+                                            this->doRead();
+                                       } else {
+                                           if (asio::error::eof == ec ||
+                                               asio::error::connection_reset == ec) {
+                                               self->getLog()->writeLine("Client disconnected");
+                                               this->p_handler->removeClient(self);
+                                           }
                                        }
 
                                        delete[] reply;
@@ -30,12 +40,15 @@ void Client::stop() {
 
 void Client::doWrite(const std::string &data) {
     auto self(shared_from_this());
-    asio::async_write(this->p_socket, asio::const_buffer(data.c_str(), data.size()),
+    //add length to sender
+    std::string toSend = std::to_string(data.length()) + ":" + data;
+
+    asio::async_write(this->p_socket, asio::const_buffer(toSend.c_str(), toSend.size()),
                       [this, self](std::error_code ec, std::size_t /*length*/) {
                           if (ec) {                              
-							  self->getLog()->writeLine(ec.message());
+                              self->getLog()->writeLine(ec.message());
                           }
 
-						  //TODO what to do next, basically nothing, wait for response
+                          //TODO what to do next, basically nothing, wait for response
                       });
 }

@@ -14,7 +14,9 @@ public:
 		PERROR = -1,
 		PREQUEST = 0,
 		PCHALLENGE = 1,
-		PLOGIN = 2
+		PLOGIN = 2,
+		PPUSH = 3,
+		PRESET = 4
 	};
 
 	ConnectionObject() = default;

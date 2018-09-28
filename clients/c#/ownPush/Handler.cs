@@ -1,13 +1,18 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Text;
+using WatsonTcp;
 
 namespace ownPush
 {
     class Handler
     {
-        private Client p_ownPushClient;
-        private string p_clientID;
-        private string p_secret;
+        private WatsonTcpClient p_client;
+        private static readonly int p_port = 7951;
+
+        private readonly string p_host;
+        private readonly string p_clientID;
+        private readonly string p_secret;
 
         public delegate void LogHandler(object sender, string data);
         public event LogHandler WriteToLog;
@@ -19,55 +24,64 @@ namespace ownPush
         {
             p_clientID = clientID;
             p_secret = secret;
-
-            p_ownPushClient = new Client(host);
-            p_ownPushClient.DataReceived += ownPushClient_dataReceived;
-            p_ownPushClient.ConnectionEstablished += ownPushClient_connectionEstablished;
-            p_ownPushClient.ConnectionStateChanged += ownPushClient_ConnectionStateChanged;
-            p_ownPushClient.WriteToLog += ownPushClient_WriteToLog;
+            p_host = host;            
         }
 
-        private void ownPushClient_ConnectionStateChanged(object sender, bool connected)
+        private bool ServerDisconnected()
         {
-            ConnectionStateChanged?.Invoke(sender, connected);
-        }
-
-        private void ownPushClient_WriteToLog(object sender, string data)
-        {
-            WriteToLog?.Invoke(sender, data);
+            ConnectionStateChanged?.Invoke(this, false);
+            p_client = null;
+            return true;
         }
 
         public void Start()
         {
-            p_ownPushClient.Connect();
+            if (p_client == null)
+                p_client = new WatsonTcpClient(p_host, p_port, ServerConnected, ServerDisconnected, MessageReceived, true);
         }
 
         public void Stop()
         {
-            p_ownPushClient.Disconnect();
+            if (p_client != null)
+                p_client.Dispose();
         }
 
-        private void ownPushClient_dataReceived(object sender, string data)
+        private bool MessageReceived(byte[] data)
         {
-            WriteToLog?.Invoke(sender, data);
-            handleData(JsonConvert.DeserializeObject<ConnectionObject>(data));
+            return HandleData(JsonConvert.DeserializeObject<ConnectionObject>(Encoding.UTF8.GetString(data)));
         }
 
-        private void handleData(ConnectionObject co)
+        private bool HandleData(ConnectionObject co)
         {
+            WriteToLog?.Invoke(this, co.ToString());
 
+            switch(co.purpose)
+            {
+                case Purpose.CHALLENGE:
+                    break;
+                case Purpose.PUSH:
+                    //TODO PUSH received, handle and show
+                    break;
+                case Purpose.RESET:
+                    //TODO RESET received -> reconnect
+                    break;
+            }
+
+            return true;
         }
 
-        private void ownPushClient_connectionEstablished(object sender)
+        private bool ServerConnected()
         {
+            ConnectionStateChanged?.Invoke(this, true);
             SendRequest();
+            return true;
         }
 
         private void SendRequest()
         {
             ConnectionObject co = new ConnectionObject(Purpose.REQUEST, p_clientID);
             string json = JsonConvert.SerializeObject(co);
-            p_ownPushClient.Send(json);
+            p_client.Send(Encoding.UTF8.GetBytes(json));
         }
     }
 }

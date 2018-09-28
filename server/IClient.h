@@ -2,6 +2,7 @@
 #define OWNPUSH_ICLIENT_H
 
 #include <string>
+#include <sstream>
 #include "ILog.h"
 
 class IClient {
@@ -10,6 +11,7 @@ private:
 
 	std::string p_clientID;
 	std::string p_challenge;
+	bool p_loggedIn = false;
 
 public:
 
@@ -35,12 +37,28 @@ public:
 		return this->p_challenge;
 	}
 
+	void login() {
+		p_loggedIn = true;
+	}
+
+	bool isLoggedIn() {
+		return this->p_loggedIn;
+	}
+
 	virtual void stop() = 0;
 
 	virtual void doWrite(const std::string &data) = 0;
 
 	std::shared_ptr<ILog> getLog() {
 		return this->p_log;
+	}
+
+	size_t stosize(const std::string &data) {
+		std::stringstream sstream(data);
+		size_t result;
+		sstream >> result;
+
+		return result;
 	}
 };
 

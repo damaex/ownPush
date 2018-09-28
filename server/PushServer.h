@@ -6,7 +6,7 @@
 #include "ConnectionObject.h"
 #include "ChallengeHandler.h"
 
-#define OWNPUSH_PORT 7951
+constexpr auto OWNPUSH_PORT = 7951;
 
 class PushServer : public IHandler, public std::enable_shared_from_this<IHandler> {
 private:
