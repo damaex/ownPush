@@ -4,6 +4,9 @@
 #include <string>
 
 class ChallengeHandler {
+private:
+	std::string randomString(size_t length);
+
 public:
 	std::string createChallenge();
 
