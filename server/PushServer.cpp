@@ -69,7 +69,7 @@ void PushServer::handleIncoming(std::shared_ptr<IClient> cl, const ConnectionObj
                 throw UnknownCommandException();
             }
 
-			//check the login
+            //check the login
             if (this->p_challengeHandler.checkLogin(cl->getChallenge(), cl->getClientID(), co.data)) {
                 cl->login();
             }
