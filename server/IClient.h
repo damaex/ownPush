@@ -39,6 +39,8 @@ public:
 
 	void login() {
 		p_loggedIn = true;
+
+		this->p_log->writeLine("User '" + this->p_clientID + "' logged in");
 	}
 
 	bool isLoggedIn() {

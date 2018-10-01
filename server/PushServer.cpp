@@ -1,10 +1,13 @@
 #include "PushServer.h"
+#include "exceptions/ChallengeIncorrectException.h"
 #include "exceptions/ClientIDAlreadySetException.h"
 #include "exceptions/UnknownCommandException.h"
 #include <algorithm>
 
-PushServer::PushServer(asio::io_context &io_context, std::shared_ptr<ILog> log)
-        : p_acceptor(io_context, asio::ip::tcp::endpoint(asio::ip::tcp::v6(), OWNPUSH_PORT)), p_log(log) {}
+PushServer::PushServer(asio::io_context &io_context, std::shared_ptr<ILog> log, std::shared_ptr<IUserProvider> userProvider)
+        : p_acceptor(io_context, asio::ip::tcp::endpoint(asio::ip::tcp::v6(), OWNPUSH_PORT)),
+          p_challengeHandler(std::move(userProvider)),
+          p_log(std::move(log)) {}
 
 void PushServer::incomingPushData(std::shared_ptr<IClient> cl, const std::string &data) {
     try {
@@ -72,6 +75,8 @@ void PushServer::handleIncoming(std::shared_ptr<IClient> cl, const ConnectionObj
             //check the login
             if (this->p_challengeHandler.checkLogin(cl->getChallenge(), cl->getClientID(), co.data)) {
                 cl->login();
+            } else {
+                throw ChallengeIncorrectException();
             }
 
             break;

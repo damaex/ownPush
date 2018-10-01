@@ -2,6 +2,7 @@
 #include <random>
 #include <algorithm>
 #include <vector>
+#include <sha2_512.h>
 
 std::string ChallengeHandler::randomString(size_t length) {
     const auto ch_set = std::vector<char>(
@@ -28,6 +29,12 @@ std::string ChallengeHandler::randomString(size_t length) {
     return str;
 }
 
+std::string ChallengeHandler::hash(const std::string &data) {
+    return Chocobo1::SHA2_512().addData(data.c_str(), data.length()).finalize().toString();
+}
+
+ChallengeHandler::ChallengeHandler(std::shared_ptr<IUserProvider> userProvider)
+    : p_userProvider(userProvider) {}
 
 std::string ChallengeHandler::createChallenge() {
     return this->randomString(64);
@@ -35,7 +42,7 @@ std::string ChallengeHandler::createChallenge() {
 
 bool ChallengeHandler::checkLogin(const std::string &challenge, const std::string &clientID, const std::string &login) {
     //get secret for client ID
-    //return SHA(challenge + secret) == login
-
-    return false;
+    std::string secret = p_userProvider->getClientSecret(clientID);
+    //check hash against login data
+    return this->hash(challenge + secret) == login;
 }

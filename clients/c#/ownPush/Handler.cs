@@ -37,7 +37,14 @@ namespace ownPush
         public void Start()
         {
             if (p_client == null)
-                p_client = new WatsonTcpClient(p_host, p_port, ServerConnected, ServerDisconnected, MessageReceived, true);
+                try
+                {
+                    p_client = new WatsonTcpClient(p_host, p_port, ServerConnected, ServerDisconnected, MessageReceived, true);
+                } catch(Exception ex) {
+                    p_client = null;
+                    WriteToLog?.Invoke(this, ex.Message);
+                    ConnectionStateChanged?.Invoke(this, false);
+                }
         }
 
         public void Stop()
@@ -58,6 +65,9 @@ namespace ownPush
             switch(co.purpose)
             {
                 case Purpose.CHALLENGE:
+                    string hash = SHA512(co.data + p_secret);
+                    ConnectionObject answer = new ConnectionObject(Purpose.LOGIN, hash);
+                    SendConnectionObject(answer);
                     break;
                 case Purpose.PUSH:
                     //TODO PUSH received, handle and show
@@ -80,8 +90,29 @@ namespace ownPush
         private void SendRequest()
         {
             ConnectionObject co = new ConnectionObject(Purpose.REQUEST, p_clientID);
+            SendConnectionObject(co);
+        }
+
+        private void SendConnectionObject(ConnectionObject co)
+        {
             string json = JsonConvert.SerializeObject(co);
             p_client.Send(Encoding.UTF8.GetBytes(json));
+        }
+
+        private string SHA512(string data)
+        {
+            var bytes = System.Text.Encoding.UTF8.GetBytes(data);
+            using (var hash = System.Security.Cryptography.SHA512.Create())
+            {
+                var hashedInputBytes = hash.ComputeHash(bytes);
+
+                // Convert to text
+                // StringBuilder Capacity is 128, because 512 bits / 8 bits in byte * 2 symbols for byte 
+                var hashedInputStringBuilder = new System.Text.StringBuilder(128);
+                foreach (var b in hashedInputBytes)
+                    hashedInputStringBuilder.Append(b.ToString("X2"));
+                return hashedInputStringBuilder.ToString().ToLower();
+            }
         }
     }
 }

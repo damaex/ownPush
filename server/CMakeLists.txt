@@ -4,8 +4,10 @@ include_directories(${CMAKE_SOURCE_DIR}/external/asio/asio/include)
 include_directories(${CMAKE_SOURCE_DIR}/external/Simple-Web-Server)
 include_directories(${CMAKE_SOURCE_DIR}/external/json/single_include)
 include_directories(${CMAKE_SOURCE_DIR}/external/inih)
+include_directories(${CMAKE_SOURCE_DIR}/external/hash/src)
 
 set(exception_FILES
+        exceptions/ChallengeIncorrectException.h
         exceptions/ClientIDAlreadySetException.h
         exceptions/UnknownCommandException.h)
 
@@ -15,10 +17,13 @@ set(server_FILES
         ConnectionObject.h ConnectionObject.cpp
         IClient.h
         IHandler.h
-        Log.h ILog.h
+        ILog.h
+		IUserProvider.h
+		Log.h
         PushServer.cpp PushServer.h
         RestServer.cpp RestServer.h
         Settings.cpp Settings.h
+		TestUserProvider.cpp TestUserProvider.h
         main.cpp)
 
 add_executable(server
