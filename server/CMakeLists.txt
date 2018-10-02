@@ -4,7 +4,7 @@ include_directories(${CMAKE_SOURCE_DIR}/external/asio/asio/include)
 include_directories(${CMAKE_SOURCE_DIR}/external/Simple-Web-Server)
 include_directories(${CMAKE_SOURCE_DIR}/external/json/single_include)
 include_directories(${CMAKE_SOURCE_DIR}/external/inih)
-include_directories(${CMAKE_SOURCE_DIR}/external/hash/src)
+include_directories(${CMAKE_SOURCE_DIR}/external/Hash/src)
 
 set(exception_FILES
         exceptions/ChallengeIncorrectException.h

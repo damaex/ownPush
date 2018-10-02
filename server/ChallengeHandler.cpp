@@ -2,7 +2,7 @@
 #include <random>
 #include <algorithm>
 #include <vector>
-#include "sha2_512.h"
+#include <sha2_512.h>
 
 std::string ChallengeHandler::randomString(size_t length) {
     const auto ch_set = std::vector<char>(
