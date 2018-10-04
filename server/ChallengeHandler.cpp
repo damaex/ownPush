@@ -21,7 +21,7 @@ std::string ChallengeHandler::randomString(size_t length) {
         });
 
     std::default_random_engine rng(std::random_device{}());
-    std::uniform_int_distribution<> dist(0, ch_set.size() - 1);
+    std::uniform_int_distribution<> dist(0, static_cast<int>(ch_set.size() - 1));
     auto randchar = [ch_set, &dist, &rng]() {return ch_set[dist(rng)]; };
 
     std::string str(length, 0);
@@ -30,7 +30,7 @@ std::string ChallengeHandler::randomString(size_t length) {
 }
 
 std::string ChallengeHandler::hash(const std::string &data) {
-    return Chocobo1::SHA2_512().addData(data.c_str(), data.length()).finalize().toString();
+    return Chocobo1::SHA2_512().addData(data.c_str(), static_cast<long>(data.length())).finalize().toString();
 }
 
 ChallengeHandler::ChallengeHandler(std::shared_ptr<IUserProvider> userProvider)

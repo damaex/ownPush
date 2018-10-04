@@ -57,7 +57,7 @@ size_t Client::stosize(const std::string &data) {
 }
 
 std::string Client::hash(const std::string &data) {
-	return Chocobo1::SHA2_512().addData(data.c_str(), data.length()).finalize().toString();
+	return Chocobo1::SHA2_512().addData(data.c_str(), static_cast<long>(data.length())).finalize().toString();
 }
 
 void Client::sendRequest() {
