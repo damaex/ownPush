@@ -1,5 +1,5 @@
 cmake-build-debug
 cmake-build-release
 msvc-build
-ubuntu-build
+unix-build
 .idea
