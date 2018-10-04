@@ -35,6 +35,7 @@ void Client::start() {
 }
 
 void Client::stop() {
+    this->p_socket.shutdown(asio::ip::tcp::socket::shutdown_both);
     this->p_socket.close();
 }
 
@@ -45,10 +46,15 @@ void Client::doWrite(const std::string &data) {
 
     asio::async_write(this->p_socket, asio::const_buffer(toSend.c_str(), toSend.size()),
                       [this, self](std::error_code ec, std::size_t /*length*/) {
-                          if (ec) {                              
-                              self->getLog()->writeLine(ec.message());
+                          if (ec) {
+                              if (asio::error::eof == ec ||
+                                  asio::error::connection_reset == ec) {
+                                  self->getLog()->writeLine("Client disconnected");
+                                  this->p_handler->removeClient(self);
+                              }
+                              else {
+                                  self->getLog()->writeLine(ec.message());
+                              }
                           }
-
-                          //TODO what to do next, basically nothing, wait for response
                       });
 }

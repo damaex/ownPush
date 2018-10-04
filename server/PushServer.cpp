@@ -3,6 +3,7 @@
 #include "exceptions/ClientIDAlreadySetException.h"
 #include "exceptions/UnknownCommandException.h"
 #include <algorithm>
+#include <iterator>
 
 PushServer::PushServer(asio::io_context &io_context, std::shared_ptr<ILog> log, std::shared_ptr<IUserProvider> userProvider)
         : p_acceptor(io_context, asio::ip::tcp::endpoint(asio::ip::tcp::v6(), OWNPUSH_PORT)),
@@ -11,7 +12,7 @@ PushServer::PushServer(asio::io_context &io_context, std::shared_ptr<ILog> log, 
 
 void PushServer::incomingPushData(std::shared_ptr<IClient> cl, const std::string &data) {
     try {
-        json incData = json::parse(data);
+        nlohmann::json incData = nlohmann::json::parse(data);
         ConnectionObject co = incData;
 
         this->p_log->writeLine("INC: " + incData.dump());
@@ -58,12 +59,7 @@ void PushServer::handleIncoming(std::shared_ptr<IClient> cl, const ConnectionObj
 
             //generate answer
             ConnectionObject answer(ConnectionObject::Purpose::PCHALLENGE, challenge);
-            json toSend = answer;
-
-            this->p_log->writeLine("OUT: " + toSend.dump());
-
-            //send answer
-            cl->doWrite(toSend.dump());
+            this->sendData(cl, answer);
 
             break;
         }
@@ -90,8 +86,24 @@ void PushServer::handleIncoming(std::shared_ptr<IClient> cl, const ConnectionObj
     }
 }
 
+void PushServer::sendData(std::shared_ptr<IClient> cl, const ConnectionObject &co) {
+    nlohmann::json toSend = co;
+    this->p_log->writeLine("OUT: " + toSend.dump());
+
+    //send answer
+    cl->doWrite(toSend.dump());
+}
+
 std::set<std::string> PushServer::getConnectedClients() {
-    std::set<std::string> data = {"test1", "test2"};
+    std::set<std::string> data;
+
+    //iterate over client list
+    for (auto client : this->p_clientList) {
+        //fill set with logged in clients
+        if (client->isLoggedIn())
+            data.emplace(client->getClientID());
+    }
+
     return data;
 }
 
@@ -103,15 +115,32 @@ void PushServer::start() {
 }
 
 void PushServer::stop() {
-    for(auto client : this->p_clientList) {
+    for(auto client : this->p_clientList)
         client->stop();
-    }
 }
 
 bool PushServer::checkConnectedClient(const std::string &id) {
-    return false;
+    //check if clientID is connected
+
+    auto result = std::find_if(this->p_clientList.begin(), this->p_clientList.end(),
+        [&](const std::shared_ptr<Client> &client) { return client->getClientID() == id; }
+    );
+
+    return result != this->p_clientList.end();
 }
 
 bool PushServer::pushMessage(const std::string &id, const std::string &message) {
-    return false;
+    //find client by id
+    auto result = std::find_if(this->p_clientList.begin(), this->p_clientList.end(),
+        [&](const std::shared_ptr<Client> &client) { return client->getClientID() == id; }
+    );
+
+    if (result == this->p_clientList.end())
+        return false;
+
+    //send message
+    ConnectionObject answer(ConnectionObject::Purpose::PPUSH, message);
+    this->sendData(*result, answer);
+
+    return true;
 }

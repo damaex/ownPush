@@ -4,7 +4,7 @@
 #include <asio.hpp>
 #include "IHandler.h"
 
-#define BUFFER_SIZE	1024
+constexpr auto BUFFER_SIZE = 1024;
 
 class Client : public IClient, public std::enable_shared_from_this<IClient> {
 private:

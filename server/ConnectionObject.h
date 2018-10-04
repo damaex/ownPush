@@ -4,8 +4,6 @@
 #include <string>
 #include <nlohmann/json.hpp>
 
-using nlohmann::json;
-
 class ConnectionObject {
 public:
 
@@ -26,8 +24,8 @@ public:
 	std::string data;
 };
 
-void to_json(json& j, const ConnectionObject& co);
+void to_json(nlohmann::json& j, const ConnectionObject& co);
 
-void from_json(const json& j, ConnectionObject& co);
+void from_json(const nlohmann::json& j, ConnectionObject& co);
 
 #endif //OWNPUSH_CONNECTIONOBJECT_H
