@@ -18,12 +18,12 @@ set(server_FILES
         IClient.h
         IHandler.h
         ILog.h
-		IUserProvider.h
-		Log.h
+        IUserProvider.h
+        Log.h
         PushServer.cpp PushServer.h
         RestServer.cpp RestServer.h
         Settings.cpp Settings.h
-		TestUserProvider.cpp TestUserProvider.h
+        TestUserProvider.cpp TestUserProvider.h
         main.cpp)
 
 add_executable(server

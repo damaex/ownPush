@@ -30,6 +30,7 @@ void PushServer::doAccept() {
         if (!ec) {
             std::shared_ptr<Client> cl = std::make_shared<Client>(std::move(socket), shared_from_this(), this->p_log);
             this->p_clientList.push_back(cl);
+            this->p_log->writeLine("Client connected");
             cl->start();
         }
 
