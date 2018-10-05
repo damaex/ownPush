@@ -1,8 +1,6 @@
 #include "RestServer.h"
 #include <nlohmann/json.hpp>
 
-using json = nlohmann::json;
-
 RestServer::RestServer(std::shared_ptr<IHandler> handler, std::shared_ptr<ILog> log)
         : p_handler(handler), p_log(log), p_settings(log) {
     this->p_httpServer.config.port = this->p_settings.getRestPort();
@@ -46,7 +44,7 @@ void RestServer::init() {
     this->p_httpServer.resource["^/clients"]["GET"] = [this](std::shared_ptr<HttpServer::Response> response,
                                                              std::shared_ptr<HttpServer::Request> request) {
         if (this->checkAdmin(request->header)) {
-            json jsonData(this->p_handler->getConnectedClients());
+            nlohmann::json jsonData(this->p_handler->getConnectedClients());
             response->write(jsonData.dump(4));
         } else {
             this->sendError(response);
@@ -94,7 +92,7 @@ void RestServer::sendError(std::shared_ptr<HttpServer::Response> response) {
 }
 
 std::string RestServer::createAnswer(bool isOK) {
-    json jsonData = {
+    nlohmann::json jsonData = {
             {"result", isOK}
     };
 
