@@ -1,6 +1,6 @@
 package net.damaex.ownpushtest;
 
-public class ConnectionObject {
+class ConnectionObject {
     public enum Purpose {
         ERROR(-1),
         REQUEST(0),

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ownPushTest</string>
+    <string name="btnRun">Start</string>
+    <string name="btnStop">Start</string>
 </resources>

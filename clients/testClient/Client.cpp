@@ -83,8 +83,8 @@ void Client::dataHandler(const std::string &data) {
 		switch (co.purpose) {
 			case ConnectionObject::Purpose::PCHALLENGE: {
 				std::string hash = this->hash(co.data + this->p_secret);
-				ConnectionObject co(ConnectionObject::Purpose::PLOGIN, hash);
-				this->sendData(co);
+				ConnectionObject answer(ConnectionObject::Purpose::PLOGIN, hash);
+				this->sendData(answer);
 				break;
 			}
 			case ConnectionObject::Purpose::PPUSH: {

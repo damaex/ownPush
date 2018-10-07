@@ -10,7 +10,7 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
-public class TcpClient {
+class TcpClient {
 
     // message to send to the server
     private String mServerMessage;
@@ -30,7 +30,7 @@ public class TcpClient {
     /**
      * Constructor of the class. OnMessagedReceived listens for the messages received from server
      */
-    public TcpClient(OnClientHandler listener, String host, int port) {
+    TcpClient(OnClientHandler listener, String host, int port) {
         mMessageListener = listener;
         mHost = host;
         mPort = port;
@@ -41,7 +41,7 @@ public class TcpClient {
      *
      * @param message text entered by client
      */
-    public void sendMessage(String message) {
+    void sendMessage(String message) {
         if (mBufferOut != null && !mBufferOut.checkError()) {
             mBufferOut.println(message);
             mBufferOut.flush();
@@ -51,7 +51,7 @@ public class TcpClient {
     /**
      * Close the connection and release the members
      */
-    public void stopClient() {
+    void stopClient() {
         mRun = false;
 
         if (mBufferOut != null) {
@@ -64,7 +64,7 @@ public class TcpClient {
         mServerMessage = null;
     }
 
-    public void run() {
+    void run() {
 
         mRun = true;
 
