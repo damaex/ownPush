@@ -18,9 +18,9 @@ public:
 
 	void start();
 
-	void stop();
+	void stop() override;
 
-	void doWrite(const std::string &data);
+	void doWrite(const std::string &data) override;
 };
 
 #endif //OWNPUSH_CLIENT_H

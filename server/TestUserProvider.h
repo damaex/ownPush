@@ -11,7 +11,7 @@ private:
 public:
 	TestUserProvider();
 
-	std::string getClientSecret(const std::string &clientID);
+	std::string getClientSecret(const std::string &clientID) override;
 };
 
 #endif //OWNPUSH_TESTUSERPROVIDER_H

@@ -34,7 +34,7 @@ std::string ChallengeHandler::hash(const std::string &data) {
 }
 
 ChallengeHandler::ChallengeHandler(std::shared_ptr<IUserProvider> userProvider)
-    : p_userProvider(userProvider) {}
+    : p_userProvider(std::move(userProvider)) {}
 
 std::string ChallengeHandler::createChallenge() {
     return this->randomString(64);

@@ -18,7 +18,7 @@ private:
 
     void doAccept();
 
-    void removeClient(std::shared_ptr<IClient> cl);
+    void removeClient(std::shared_ptr<IClient> cl) override;
 
     void handleIncoming(std::shared_ptr<IClient> cl, const ConnectionObject &co);
 

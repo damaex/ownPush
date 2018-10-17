@@ -99,7 +99,6 @@ void Client::dataHandler(const std::string &data) {
 			}
 			default: {
 				throw UnknownCommandException();
-				break;
 			}
 		}
 
