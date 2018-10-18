@@ -1,5 +1,4 @@
-find_package(Threads REQUIRED)
-
+include_directories(${OPENSSL_INCLUDE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/external/asio/asio/include)
 include_directories(${CMAKE_SOURCE_DIR}/external/Simple-Web-Server)
 include_directories(${CMAKE_SOURCE_DIR}/external/json/single_include)
@@ -33,4 +32,5 @@ add_executable(server
 source_group("exceptions"            FILES ${exception_FILES})
 
 target_link_libraries(server
-        Threads::Threads)
+        Threads::Threads
+		${OPENSSL_LIBRARIES})

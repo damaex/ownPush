@@ -10,7 +10,15 @@ add_definitions(-DUSE_STANDALONE_ASIO)
 IF (WIN32)
   add_definitions(-D_WIN32_WINNT=0x0501)
   add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-ENDIF()
+ENDIF (WIN32)
+
+find_package(Threads REQUIRED)
+find_package(OpenSSL)
+
+IF (${OPENSSL_FOUND})
+	message(STATUS "OpenSSL_VERSION: ${OPENSSL_VERSION}")
+	add_definitions(-DUSE_OPENSSL)
+ENDIF (${OPENSSL_FOUND})
 
 add_subdirectory(server)
 add_subdirectory(clients/testClient)
