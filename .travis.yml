@@ -168,6 +168,8 @@ matrix:
 ################
 # build script #
 ################
+before_install:
+  - if test "$TRAVIS_OS_NAME" == "osx"; then brew update; brew install openssl; fi
 
 script:
   # make sure CXX is correctly set
