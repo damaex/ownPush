@@ -11,6 +11,7 @@ constexpr auto OWNPUSH_PORT = 7951;
 class PushServer : public IHandler, public std::enable_shared_from_this<IHandler> {
 private:
     asio::ip::tcp::acceptor p_acceptor;
+    asio::ssl::context ssl_context;
     std::shared_ptr<ILog> p_log;
     std::vector<std::shared_ptr<Client>> p_clientList;
     std::shared_ptr<RestServer> p_restServer;
@@ -23,6 +24,8 @@ private:
     void handleIncoming(std::shared_ptr<IClient> cl, const ConnectionObject &co);
 
     void sendData(std::shared_ptr<IClient> cl, const ConnectionObject &co);
+
+    std::string getSslPassword();
 
 public:
     explicit PushServer(asio::io_context &io_context, std::shared_ptr<ILog> log, std::shared_ptr<IUserProvider> userProvider);

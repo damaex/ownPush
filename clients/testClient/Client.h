@@ -2,6 +2,7 @@
 #define TESTCLIENT_CLIENT_H
 
 #include <asio.hpp>
+#include <asio/ssl.hpp>
 #include "../../server/ILog.h"
 #include "../../server/ConnectionObject.h"
 
@@ -17,7 +18,7 @@ private:
 	std::string p_host;
 
 	asio::io_context& p_io_context;
-	asio::ip::tcp::socket p_socket;
+	asio::ssl::stream<asio::ip::tcp::socket> p_socket;
 
 	void doRead();
 	void doWrite(const std::string &data);
@@ -36,7 +37,7 @@ private:
 	void didDisconnect(bool directReconnect);
 
 public:
-	Client(asio::io_context &io_context, std::shared_ptr<ILog> log, const std::string &host, const std::string &clientID, const std::string &secret);
+	Client(asio::io_context &io_context, asio::ssl::context& context, std::shared_ptr<ILog> log, const std::string &host, const std::string &clientID, const std::string &secret);
 
 	void start();
 	void stop();

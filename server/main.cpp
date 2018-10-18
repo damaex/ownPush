@@ -1,7 +1,6 @@
-#include <iostream>
 #include "PushServer.h"
-#include "Log.h"
 #include "TestUserProvider.h"
+#include "Log.h"
 
 int main(int argc, char *argv[]) {
     std::shared_ptr<Log> log = std::make_shared<Log>();

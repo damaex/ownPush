@@ -1,5 +1,6 @@
-#include "ConsoleLog.h"
+#include <thread>
 #include "Client.h"
+#include "ConsoleLog.h"
 
 int main() {
     std::string host = "localhost";
@@ -13,7 +14,10 @@ int main() {
     log->writeLine("");
 
     asio::io_context io_context;
-    Client cl(io_context, log, host, userID, secret);
+    asio::ssl::context ctx(asio::ssl::context::sslv23);
+    ctx.load_verify_file(log->getExecutablePath() + log->getPathDelimeter() + "ca.pem");
+
+    Client cl(io_context, ctx, log, host, userID, secret);
     cl.start();
 
     std::thread t([&io_context]() { io_context.run(); });

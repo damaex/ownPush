@@ -116,13 +116,20 @@ void Client::doConnect() {
 	asio::ip::tcp::resolver resolver(this->p_io_context);
 	auto endpoints = resolver.resolve(this->p_host, std::to_string(OWNPUSH_PORT));
 
-	asio::async_connect(this->p_socket, endpoints,
+	asio::async_connect(this->p_socket.lowest_layer(), endpoints,
 		[this](std::error_code ec, asio::ip::tcp::endpoint) {
 			if (!ec) {
-				this->sendRequest();
-				this->doRead();
+				this->p_socket.async_handshake(asio::ssl::stream_base::client, [this](std::error_code err) {
+					if (!err) {
+						this->sendRequest();
+						this->doRead();
+					} else {
+						this->p_log->writeLine("Handshake failed: " + err.message());
+						this->didDisconnect();
+					}
+				});
 			} else {
-				this->p_log->writeLine("could not connect");
+				this->p_log->writeLine("could not connect: " + ec.message());
 				this->didDisconnect();
 			}
 		}
@@ -131,8 +138,11 @@ void Client::doConnect() {
 
 void Client::closeSocket() {
 	try {
-		this->p_socket.shutdown(asio::ip::tcp::socket::shutdown_both);
-		this->p_socket.close();
+		std::error_code ec;
+		this->p_socket.shutdown(ec);
+
+		this->p_socket.lowest_layer().shutdown(asio::ip::tcp::socket::shutdown_both, ec);
+		this->p_socket.lowest_layer().close();
 	} catch (std::exception &ex) {
 		this->p_log->exception(ex);
 	}
@@ -152,8 +162,21 @@ void Client::didDisconnect(bool directReconnect) {
 	}
 }
 
-Client::Client(asio::io_context &io_context, std::shared_ptr<ILog> log, const std::string &host, const std::string &clientID, const std::string &secret)
-	: p_io_context(io_context), p_socket(io_context), p_log(log), p_host(host), p_clientID(clientID), p_secret(secret) {}
+Client::Client(asio::io_context &io_context, asio::ssl::context& context, std::shared_ptr<ILog> log, const std::string &host, const std::string &clientID, const std::string &secret)
+	: p_io_context(io_context), p_socket(io_context, context), p_log(log), p_host(host), p_clientID(clientID), p_secret(secret)
+{
+	this->p_socket.set_verify_mode(asio::ssl::verify_peer);
+#ifndef NDEBUG
+	this->p_socket.set_verify_callback([this](bool preverified, asio::ssl::verify_context& ctx) {
+		char subject_name[256];
+		X509* cert = X509_STORE_CTX_get_current_cert(ctx.native_handle());
+		X509_NAME_oneline(X509_get_subject_name(cert), subject_name, 256);
+		this->p_log->writeLine("Verifying " + std::string(subject_name));
+
+		return preverified;
+	});
+#endif
+}
 
 void Client::start() {
 	this->doConnect();

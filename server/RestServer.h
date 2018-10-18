@@ -1,9 +1,9 @@
 #ifndef OWNPUSH_RESTSERVER_H
 #define OWNPUSH_RESTSERVER_H
 
+#include <server_http.hpp>
 #include "Settings.h"
 #include "IHandler.h"
-#include <server_http.hpp>
 
 using HttpServer = SimpleWeb::Server<SimpleWeb::HTTP>;
 

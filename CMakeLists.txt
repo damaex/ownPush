@@ -13,11 +13,10 @@ IF (WIN32)
 ENDIF (WIN32)
 
 find_package(Threads REQUIRED)
-find_package(OpenSSL)
+find_package(OpenSSL REQUIRED)
 
 IF (${OPENSSL_FOUND})
 	message(STATUS "OpenSSL_VERSION: ${OPENSSL_VERSION}")
-	add_definitions(-DUSE_OPENSSL)
 ENDIF (${OPENSSL_FOUND})
 
 add_subdirectory(server)

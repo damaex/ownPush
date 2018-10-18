@@ -4,7 +4,7 @@ void Client::doRead() {
     auto self(shared_from_this());
     auto reply = new char[BUFFER_SIZE];
 
-    this->p_socket.async_read_some(asio::buffer(reply, BUFFER_SIZE),
+    this->ssl_socket.async_read_some(asio::buffer(reply, BUFFER_SIZE),
                                    [this, self, reply](std::error_code ec, std::size_t length) {
                                        if (!ec) {
                                             std::string str(reply, length);
@@ -27,16 +27,30 @@ void Client::doRead() {
                                    });
 }
 
-Client::Client(asio::ip::tcp::socket socket, std::shared_ptr<IHandler> handler, std::shared_ptr<ILog> log)
-        : IClient(std::move(log)), p_socket(std::move(socket)), p_handler(std::move(handler)) {}
+Client::Client(asio::io_context& io_context, asio::ssl::context& context, std::shared_ptr<IHandler> handler, std::shared_ptr<ILog> log)
+        : IClient(std::move(log)), ssl_socket(io_context, context), p_handler(std::move(handler)) {}
 
 void Client::start() {
-    this->doRead();
+    auto self(shared_from_this());
+
+    ssl_socket.async_handshake(asio::ssl::stream_base::server, [this, self](std::error_code ec) {
+        if(!ec)
+            this->doRead();
+        else
+            this->p_handler->removeClient(self);
+    });
+}
+
+asio::ssl::stream<asio::ip::tcp::socket>::lowest_layer_type& Client::socket() {
+    return this->ssl_socket.lowest_layer();
 }
 
 void Client::stop() {
-    this->p_socket.shutdown(asio::ip::tcp::socket::shutdown_both);
-    this->p_socket.close();
+    std::error_code ec;
+    this->ssl_socket.shutdown(ec);
+
+    this->socket().shutdown(asio::ip::tcp::socket::shutdown_both);
+    this->socket().close();
 }
 
 void Client::doWrite(const std::string &data) {
@@ -44,7 +58,7 @@ void Client::doWrite(const std::string &data) {
     //add length to sender
     std::string toSend = std::to_string(data.length()) + ":" + data;
 
-    asio::async_write(this->p_socket, asio::const_buffer(toSend.c_str(), toSend.size()),
+    asio::async_write(this->ssl_socket, asio::const_buffer(toSend.c_str(), toSend.size()),
                       [this, self](std::error_code ec, std::size_t /*length*/) {
                           if (ec) {
                               if (asio::error::eof == ec ||

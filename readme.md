@@ -5,6 +5,7 @@
 
 ## features
 - [x] own [data model](data.md)
+- [x] tls encryption
 - [x] [server](server/readme.md)
 - [x] [test client](clients/testClient/readme.md)
 - [ ] [iOS client](clients/ios/readme.md)

@@ -181,4 +181,8 @@ script:
   - git submodule update --init --recursive
   # compile
   - mkdir -p build && cd build
-  - cmake .. && cmake --build . --config Release
+  - if [ $TRAVIS_OS_NAME == "osx" ];
+    then cmake -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl ..;
+    else cmake ..;
+    fi
+  - cmake --build . --config Release

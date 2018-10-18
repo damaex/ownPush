@@ -7,8 +7,22 @@
 
 PushServer::PushServer(asio::io_context &io_context, std::shared_ptr<ILog> log, std::shared_ptr<IUserProvider> userProvider)
         : p_acceptor(io_context, asio::ip::tcp::endpoint(asio::ip::tcp::v6(), OWNPUSH_PORT)),
+          ssl_context(asio::ssl::context::sslv23),
           p_challengeHandler(std::move(userProvider)),
-          p_log(std::move(log)) {}
+          p_log(std::move(log))
+{
+    ssl_context.set_options(
+        asio::ssl::context::default_workarounds
+        | asio::ssl::context::no_sslv2
+        | asio::ssl::context::single_dh_use);
+
+    std::string path = log->getExecutablePath() + log->getPathDelimeter();
+
+    ssl_context.set_password_callback(std::bind(&PushServer::getSslPassword, this));
+    ssl_context.use_certificate_chain_file(path + "server.pem");
+    ssl_context.use_private_key_file(path + "server.pem", asio::ssl::context::pem);
+    ssl_context.use_tmp_dh_file(path + "dh2048.pem");
+}
 
 void PushServer::incomingPushData(std::shared_ptr<IClient> cl, const std::string &data) {
     try {
@@ -26,9 +40,10 @@ void PushServer::incomingPushData(std::shared_ptr<IClient> cl, const std::string
 }
 
 void PushServer::doAccept() {
-    this->p_acceptor.async_accept([this](std::error_code ec, asio::ip::tcp::socket socket) {
+    std::shared_ptr<Client> cl = std::make_shared<Client>(this->p_acceptor.get_io_context(), this->ssl_context, shared_from_this(), this->p_log);
+
+    this->p_acceptor.async_accept(cl->socket(), [this, cl](std::error_code ec) {
         if (!ec) {
-            std::shared_ptr<Client> cl = std::make_shared<Client>(std::move(socket), shared_from_this(), this->p_log);
             this->p_clientList.push_back(cl);
             this->p_log->writeLine("Client connected");
             cl->start();
@@ -93,6 +108,10 @@ void PushServer::sendData(std::shared_ptr<IClient> cl, const ConnectionObject &c
 
     //send answer
     cl->doWrite(toSend.dump());
+}
+
+std::string PushServer::getSslPassword() {
+    return "test";
 }
 
 std::set<std::string> PushServer::getConnectedClients() {
