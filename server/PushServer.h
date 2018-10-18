@@ -25,8 +25,6 @@ private:
 
     void sendData(std::shared_ptr<IClient> cl, const ConnectionObject &co);
 
-    std::string getSslPassword();
-
 public:
     explicit PushServer(asio::io_context &io_context, std::shared_ptr<ILog> log, std::shared_ptr<IUserProvider> userProvider);
 

@@ -18,7 +18,10 @@ PushServer::PushServer(asio::io_context &io_context, std::shared_ptr<ILog> log, 
 
     std::string path = log->getExecutablePath() + log->getPathDelimeter();
 
-    ssl_context.set_password_callback(std::bind(&PushServer::getSslPassword, this));
+    ssl_context.set_password_callback([](std::size_t size, asio::ssl::context::password_purpose purpose) -> std::string {
+        return "test";
+    });
+
     ssl_context.use_certificate_chain_file(path + "server.pem");
     ssl_context.use_private_key_file(path + "server.pem", asio::ssl::context::pem);
     ssl_context.use_tmp_dh_file(path + "dh2048.pem");
@@ -108,10 +111,6 @@ void PushServer::sendData(std::shared_ptr<IClient> cl, const ConnectionObject &c
 
     //send answer
     cl->doWrite(toSend.dump());
-}
-
-std::string PushServer::getSslPassword() {
-    return "test";
 }
 
 std::set<std::string> PushServer::getConnectedClients() {
