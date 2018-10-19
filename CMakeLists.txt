@@ -8,7 +8,7 @@ add_definitions(-DASIO_STANDALONE)
 add_definitions(-DUSE_STANDALONE_ASIO)
 
 IF (WIN32)
-  add_definitions(-D_WIN32_WINNT=0x0501)
+  add_definitions(-D_WIN32_WINNT=0x0600)
   add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 ENDIF (WIN32)
 
