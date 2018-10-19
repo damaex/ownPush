@@ -14,8 +14,8 @@ int main() {
     log->writeLine("");
 
     asio::io_context io_context;
-    asio::ssl::context ctx(asio::ssl::context::sslv23);
-    ctx.load_verify_file(log->getExecutablePath() + log->getPathDelimeter() + "ca.pem");
+    asio::ssl::context ctx(asio::ssl::context::tlsv12);
+    ctx.load_verify_file(log->getExecutablePath() + log->getPathDelimeter() + "server.pem");
 
     Client cl(io_context, ctx, log, host, userID, secret);
     cl.start();

@@ -9,8 +9,8 @@ PushServer::PushServer(asio::io_context &io_context, std::shared_ptr<ILog> log, 
         : p_acceptor(io_context, asio::ip::tcp::endpoint(asio::ip::tcp::v6(), OWNPUSH_PORT)),
           ssl_context(asio::ssl::context::tlsv12),
           p_challengeHandler(std::move(userProvider)),
-          p_log(std::move(log)),
-          p_settings(p_log)
+          p_log(log),
+          p_settings(log)
 {
     ssl_context.use_certificate_chain_file(p_settings.getSslCertificateFile());
     ssl_context.use_private_key_file(p_settings.getSslPrivateKeyFile(), asio::ssl::context::pem);
