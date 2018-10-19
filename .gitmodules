@@ -10,3 +10,6 @@
 [submodule "external/Hash"]
 	path = external/Hash
 	url = https://github.com/Chocobo1/Hash
+[submodule "external/Simple-Web-Server"]
+	path = external/Simple-Web-Server
+	url = https://gitlab.com/damaex/Simple-Web-Server.git
