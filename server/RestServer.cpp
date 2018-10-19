@@ -1,8 +1,12 @@
 #include "RestServer.h"
 #include <nlohmann/json.hpp>
 
-RestServer::RestServer(std::shared_ptr<IHandler> handler, std::shared_ptr<ILog> log)
-        : p_handler(handler), p_log(log), p_settings(log) {
+RestServer::RestServer(std::shared_ptr<IHandler> handler, std::shared_ptr<ILog> log, Settings& settings)
+        : p_handler(handler),
+          p_log(log),
+          p_settings(settings),
+          p_httpServer(p_settings.getSslCertificateFile(), p_settings.getSslPrivateKeyFile())
+{
     this->p_httpServer.config.port = this->p_settings.getRestPort();
     this->init();
 }
@@ -25,24 +29,24 @@ void RestServer::stop() {
 }
 
 void RestServer::init() {
-    this->p_httpServer.on_error = [](std::shared_ptr<HttpServer::Request> /*request*/,
+    this->p_httpServer.on_error = [](std::shared_ptr<HttpsServer::Request> /*request*/,
                                      const SimpleWeb::error_code & /*ec*/) {
         // Handle errors here
         // Note that connection timeouts will also call this handle with ec set to SimpleWeb::errc::operation_canceled
     };
 
-    this->p_httpServer.default_resource["GET"] = [this](std::shared_ptr<HttpServer::Response> response,
-                                                        std::shared_ptr<HttpServer::Request> request) {
+    this->p_httpServer.default_resource["GET"] = [this](std::shared_ptr<HttpsServer::Response> response,
+                                                        std::shared_ptr<HttpsServer::Request> request) {
         this->sendError(response);
     };
 
-    this->p_httpServer.default_resource["POST"] = [this](std::shared_ptr<HttpServer::Response> response,
-                                                         std::shared_ptr<HttpServer::Request> request) {
+    this->p_httpServer.default_resource["POST"] = [this](std::shared_ptr<HttpsServer::Response> response,
+                                                         std::shared_ptr<HttpsServer::Request> request) {
         this->sendError(response);
     };
 
-    this->p_httpServer.resource["^/clients"]["GET"] = [this](std::shared_ptr<HttpServer::Response> response,
-                                                             std::shared_ptr<HttpServer::Request> request) {
+    this->p_httpServer.resource["^/clients"]["GET"] = [this](std::shared_ptr<HttpsServer::Response> response,
+                                                             std::shared_ptr<HttpsServer::Request> request) {
         if (this->checkAdmin(request->header)) {
             nlohmann::json jsonData(this->p_handler->getConnectedClients());
             response->write(jsonData.dump(4));
@@ -51,8 +55,8 @@ void RestServer::init() {
         }
     };
 
-    this->p_httpServer.resource["^/online"]["GET"] = [this](std::shared_ptr<HttpServer::Response> response,
-                                                            std::shared_ptr<HttpServer::Request> request) {
+    this->p_httpServer.resource["^/online"]["GET"] = [this](std::shared_ptr<HttpsServer::Response> response,
+                                                            std::shared_ptr<HttpsServer::Request> request) {
         auto queryFields = request->header;
         auto itID = queryFields.find("id");
 
@@ -63,8 +67,8 @@ void RestServer::init() {
         }
     };
 
-    this->p_httpServer.resource["^/push"]["POST"] = [this](std::shared_ptr<HttpServer::Response> response,
-                                                           std::shared_ptr<HttpServer::Request> request) {
+    this->p_httpServer.resource["^/push"]["POST"] = [this](std::shared_ptr<HttpsServer::Response> response,
+                                                           std::shared_ptr<HttpsServer::Request> request) {
         auto queryFields = request->header;
         auto itID = queryFields.find("id");
         auto body = request->content.string();
@@ -87,7 +91,7 @@ bool RestServer::checkAdmin(SimpleWeb::CaseInsensitiveMultimap &map) {
            && this->p_settings.getRestPassword() == itPassword->second;
 }
 
-void RestServer::sendError(std::shared_ptr<HttpServer::Response> response) {
+void RestServer::sendError(std::shared_ptr<HttpsServer::Response> response) {
     response->write(SimpleWeb::StatusCode::client_error_not_found, "not the droid you are looking for");
 }
 

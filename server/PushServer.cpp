@@ -7,24 +7,13 @@
 
 PushServer::PushServer(asio::io_context &io_context, std::shared_ptr<ILog> log, std::shared_ptr<IUserProvider> userProvider)
         : p_acceptor(io_context, asio::ip::tcp::endpoint(asio::ip::tcp::v6(), OWNPUSH_PORT)),
-          ssl_context(asio::ssl::context::sslv23),
+          ssl_context(asio::ssl::context::tlsv12),
           p_challengeHandler(std::move(userProvider)),
-          p_log(std::move(log))
+          p_log(std::move(log)),
+          p_settings(p_log)
 {
-    ssl_context.set_options(
-        asio::ssl::context::default_workarounds
-        | asio::ssl::context::no_sslv2
-        | asio::ssl::context::single_dh_use);
-
-    std::string path = log->getExecutablePath() + log->getPathDelimeter();
-
-    ssl_context.set_password_callback([](std::size_t size, asio::ssl::context::password_purpose purpose) -> std::string {
-        return "test";
-    });
-
-    ssl_context.use_certificate_chain_file(path + "server.pem");
-    ssl_context.use_private_key_file(path + "server.pem", asio::ssl::context::pem);
-    ssl_context.use_tmp_dh_file(path + "dh2048.pem");
+    ssl_context.use_certificate_chain_file(p_settings.getSslCertificateFile());
+    ssl_context.use_private_key_file(p_settings.getSslPrivateKeyFile(), asio::ssl::context::pem);
 }
 
 void PushServer::incomingPushData(std::shared_ptr<IClient> cl, const std::string &data) {
@@ -127,7 +116,7 @@ std::set<std::string> PushServer::getConnectedClients() {
 }
 
 void PushServer::start() {
-    this->p_restServer = std::make_shared<RestServer>(shared_from_this(), this->p_log);
+    this->p_restServer = std::make_shared<RestServer>(shared_from_this(), this->p_log, this->p_settings);
     this->p_restServer->start();
 
     this->doAccept();

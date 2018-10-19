@@ -7,7 +7,7 @@ namespace ownPush
 {
     class Handler
     {
-        private WatsonTcpClient p_client;
+        private WatsonTcpSslClient p_client;
         private static readonly int p_port = 7951;
 
         private readonly string p_host;
@@ -39,7 +39,7 @@ namespace ownPush
             if (p_client == null)
                 try
                 {
-                    p_client = new WatsonTcpClient(p_host, p_port, ServerConnected, ServerDisconnected, MessageReceived, true);
+                    p_client = new WatsonTcpSslClient(p_host, p_port, "", "", true, false, ServerConnected, ServerDisconnected, MessageReceived, true);
                 } catch(Exception ex) {
                     p_client = null;
                     WriteToLog?.Invoke(this, ex.Message);

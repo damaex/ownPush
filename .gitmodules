@@ -7,9 +7,6 @@
 [submodule "external/inih"]
 	path = external/inih
 	url = https://github.com/jtilly/inih.git
-[submodule "external/Simple-Web-Server"]
-	path = external/Simple-Web-Server
-	url = https://github.com/eidheim/Simple-Web-Server.git
 [submodule "external/Hash"]
 	path = external/Hash
 	url = https://github.com/Chocobo1/Hash
