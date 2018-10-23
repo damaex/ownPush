@@ -1,10 +1,12 @@
-package net.damaex.ownpushtest;
+package net.damaex.OwnPush;
 
 import com.google.gson.Gson;
 
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import javax.net.ssl.SSLSocketFactory;
 
 public class Client {
     private static final int OWNPUSH_PORT = 7951;
@@ -16,39 +18,55 @@ public class Client {
     private TcpClient mTcpClient = null;
     private OwnPushHandler mPushHandler;
 
-    public Client(OwnPushHandler pushHandler, String host, String clientID, String secret) {
+    private SSLSocketFactory mSocketFactory;
+
+    Client(OwnPushHandler pushHandler, String host, String clientID, String secret) {
         mPushHandler = pushHandler;
         mHost = host;
         mClientID = clientID;
         mSecret = secret;
+        mSocketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+    }
+
+    Client(OwnPushHandler pushHandler, String host, String clientID, String secret, SSLSocketFactory socketFactory) {
+        mPushHandler = pushHandler;
+        mHost = host;
+        mClientID = clientID;
+        mSecret = secret;
+        mSocketFactory = socketFactory;
     }
 
     public void start() {
         mTcpClient = new TcpClient(new TcpClient.OnClientHandler() {
             @Override
-            //here the messageReceived method is implemented
             public void onMessageReceived(String message) {
-                //this method calls the onProgressUpdate
                 handleMessage(message);
             }
 
             @Override
             public void onClientConnected() {
                 mPushHandler.connectionStatus(true);
+                mIsRunning = true;
             }
 
             @Override
             public void onClientDisconnected() {
+                mIsRunning = false;
                 mPushHandler.connectionStatus(false);
                 sendRequest();
             }
-        }, mHost, OWNPUSH_PORT);
+        }, mHost, OWNPUSH_PORT, mSocketFactory);
 
-        mTcpClient.run();
+        new Thread()
+        {
+            public void run() {
+                mTcpClient.run();
+            }
+        }.start();
         mIsRunning = true;
     }
 
-    public void stop() {
+    private void stop() {
         mTcpClient.stopClient();
         mIsRunning = false;
     }
@@ -84,6 +102,7 @@ public class Client {
                 }
             }
         } else {
+            this.stop();
             //TODO disconnect
         }
     }

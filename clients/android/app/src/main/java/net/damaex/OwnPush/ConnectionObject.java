@@ -1,4 +1,4 @@
-package net.damaex.ownpushtest;
+package net.damaex.OwnPush;
 
 class ConnectionObject {
     public enum Purpose {
@@ -13,6 +13,10 @@ class ConnectionObject {
 
         Purpose(int type) {
             this.type = type;
+        }
+
+        public int getType() {
+            return this.type;
         }
     }
 

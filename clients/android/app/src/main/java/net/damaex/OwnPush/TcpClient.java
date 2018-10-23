@@ -1,4 +1,4 @@
-package net.damaex.ownpushtest;
+package net.damaex.OwnPush;
 
 import android.util.Log;
 
@@ -8,7 +8,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
-import java.net.Socket;
+
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 
 class TcpClient {
 
@@ -27,13 +29,16 @@ class TcpClient {
     // used to read messages from the server
     private BufferedReader mBufferIn;
 
+    private SSLSocketFactory mSocketFactory;
+
     /**
      * Constructor of the class. OnMessagedReceived listens for the messages received from server
      */
-    TcpClient(OnClientHandler listener, String host, int port) {
+    TcpClient(OnClientHandler listener, String host, int port, SSLSocketFactory socketFactory) {
         mMessageListener = listener;
         mHost = host;
         mPort = port;
+        mSocketFactory = socketFactory;
     }
 
     /**
@@ -74,8 +79,8 @@ class TcpClient {
 
             Log.e("TCP Client", "C: Connecting...");
 
-            //create a socket to make the connection with the server
-            Socket socket = new Socket(serverAddr, mPort);
+            //create a ssl socket to make the connection with the server
+            SSLSocket socket = (SSLSocket) mSocketFactory.createSocket(serverAddr, mPort);
 
             try {
 
@@ -106,8 +111,10 @@ class TcpClient {
                 Log.e("TCP", "S: Error", e);
 
             } finally {
+                mRun = false;
+
                 //the socket must be closed. It is not possible to reconnect to this socket
-                // after it is closed, which means a new socket instance has to be created.
+                //after it is closed, which means a new socket instance has to be created.
                 socket.close();
                 mMessageListener.onClientDisconnected();
             }
