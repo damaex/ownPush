@@ -20,6 +20,9 @@ namespace ownPush
         public delegate void ConnectionStateHandler(object sender, bool connected);
         public event ConnectionStateHandler ConnectionStateChanged;
 
+        public delegate void PushReceivedHandler(object sender, string data);
+        public event PushReceivedHandler PushReceived;
+
         public Handler(string host, string clientID, string secret)
         {
             p_clientID = clientID;
@@ -70,7 +73,8 @@ namespace ownPush
                     SendConnectionObject(answer);
                     break;
                 case Purpose.PUSH:
-                    //TODO PUSH received, handle and show
+                    //PUSH received, handle and show
+                    PushReceived?.Invoke(this, co.data);
                     break;
                 case Purpose.RESET:
                     //TODO RESET received -> reconnect

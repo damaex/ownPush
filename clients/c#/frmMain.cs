@@ -33,9 +33,15 @@ namespace ownPushClient
 
                 ownPushHandler.ConnectionStateChanged += OwnPushHandler_ConnectionStateChanged;
                 ownPushHandler.WriteToLog += OwnPushHandler_WriteToLog;
+                ownPushHandler.PushReceived += OwnPushHandler_PushReceived;
 
                 ownPushHandler.Start();
             }
+        }
+
+        private void OwnPushHandler_PushReceived(object sender, string data)
+        {
+            WriteToLog("Push Received: " + data);
         }
 
         private void OwnPushHandler_WriteToLog(object sender, string data)
