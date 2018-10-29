@@ -42,7 +42,7 @@ namespace ownPush
             if (p_client == null)
                 try
                 {
-                    p_client = new WatsonTcpSslClient(p_host, p_port, "", "", true, false, ServerConnected, ServerDisconnected, MessageReceived, true);
+                    p_client = new WatsonTcpSslClient(p_host, p_port, "ca.pem", "", true, false, ServerConnected, ServerDisconnected, MessageReceived, true);
                 } catch(Exception ex) {
                     p_client = null;
                     WriteToLog?.Invoke(this, ex.Message);
