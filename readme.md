@@ -23,7 +23,7 @@ name=root
 password=toor
 port=7952
 
-[ss]
+[ssl]
 certificate=ownpush.crt
 key=ownpush.key
 ```
