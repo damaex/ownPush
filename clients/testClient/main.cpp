@@ -15,7 +15,13 @@ int main() {
 
     asio::io_context io_context;
     asio::ssl::context ctx(asio::ssl::context::tlsv12);
-    ctx.load_verify_file(log->getExecutablePath() + log->getPathDelimeter() + "ca.pem");
+	try {
+		ctx.load_verify_file(log->getExecutablePath() + log->getPathDelimeter() + "ca.pem");
+	} catch (std::exception &e) {
+		log->exception(e);
+		log->writeLine("Could not load \"ca.pem\" for certificate verification");
+		return 1;
+	}
 
     Client cl(io_context, ctx, log, host, userID, secret);
     cl.start();
