@@ -106,7 +106,7 @@ std::set<std::string> PushServer::getConnectedClients() {
     std::set<std::string> data;
 
     //iterate over client list
-    for (auto client : this->p_clientList) {
+    for (const std::shared_ptr<Client> &client : this->p_clientList) {
         //fill set with logged in clients
         if (client->isLoggedIn())
             data.emplace(client->getClientID());
@@ -123,7 +123,7 @@ void PushServer::start() {
 }
 
 void PushServer::stop() {
-    for(auto client : this->p_clientList)
+    for(const std::shared_ptr<Client> &client : this->p_clientList)
         client->stop();
 }
 

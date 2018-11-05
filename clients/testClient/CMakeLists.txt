@@ -1,3 +1,5 @@
+include_directories(${VLD_INCLUDE_DIR})
+
 include_directories(${OPENSSL_INCLUDE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/external/asio/asio/include)
 include_directories(${CMAKE_SOURCE_DIR}/external/json/single_include)
@@ -14,4 +16,5 @@ add_executable(testClient
 
 target_link_libraries(testClient
         Threads::Threads
+		${VLD_LIBRARY}
 		${OPENSSL_LIBRARIES})

@@ -1,3 +1,7 @@
+#if defined(_MSC_VER) && defined(VLD_ENABLED) && defined(_DEBUG)
+#include <vld.h>
+#endif
+
 #include "PushServer.h"
 #include "TestUserProvider.h"
 #include "Log.h"

@@ -1,9 +1,11 @@
+#include <utility>
+
 #include "RestServer.h"
 #include <nlohmann/json.hpp>
 
 RestServer::RestServer(std::shared_ptr<IHandler> handler, std::shared_ptr<ILog> log, Settings& settings)
-        : p_handler(handler),
-          p_log(log),
+        : p_handler(std::move(handler)),
+          p_log(std::move(log)),
           p_settings(settings),
           p_httpServer(p_settings.getSslCertificateFile(), p_settings.getSslPrivateKeyFile())
 {

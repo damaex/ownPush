@@ -1,3 +1,7 @@
+#if defined(_MSC_VER) && defined(VLD_ENABLED) && defined(_DEBUG)
+#include <vld.h>
+#endif
+
 #include <thread>
 #include "Client.h"
 #include "ConsoleLog.h"

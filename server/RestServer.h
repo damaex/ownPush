@@ -26,7 +26,7 @@ private:
     std::string createAnswer(bool isOK);
 
 public:
-    explicit RestServer(std::shared_ptr<IHandler> handler, std::shared_ptr<ILog> log, Settings& settings);
+    RestServer(std::shared_ptr<IHandler> handler, std::shared_ptr<ILog> log, Settings& settings);
 
     void start();
 

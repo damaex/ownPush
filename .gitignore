@@ -3,3 +3,8 @@ cmake-build-release
 msvc-build
 unix-build
 .idea
+*.pem
+*.crt
+*.key
+*.srl
+*.csr

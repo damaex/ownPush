@@ -1,3 +1,5 @@
+#include <utility>
+
 #ifndef OWNPUSH_ICLIENT_H
 #define OWNPUSH_ICLIENT_H
 
@@ -15,7 +17,7 @@ private:
 
 public:
 
-	IClient(std::shared_ptr<ILog> log) : p_log(log) {}
+	explicit IClient(std::shared_ptr<ILog> log) : p_log(std::move(log)) {}
 
 	void setClientID(const std::string &value) {
 		this->p_clientID = value;
