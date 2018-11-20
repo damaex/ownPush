@@ -1,4 +1,4 @@
-package net.damaex.OwnPush;
+package net.damaex.ownpush;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

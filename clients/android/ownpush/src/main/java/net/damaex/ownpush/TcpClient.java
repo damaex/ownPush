@@ -1,4 +1,4 @@
-package net.damaex.OwnPush;
+package net.damaex.ownpush;
 
 import android.util.Log;
 
@@ -127,8 +127,10 @@ class TcpClient {
 
     }
 
-    //Declare the interface. The method messageReceived(String message) will must be implemented in the MyActivity
-    //class at on asynckTask doInBackground
+    /**
+     * Declare the interface. The method messageReceived(String message) will must be implemented
+     * in the MyActivity class at on asynckTask doInBackground
+     */
     public interface OnClientHandler {
         void onMessageReceived(String message);
 

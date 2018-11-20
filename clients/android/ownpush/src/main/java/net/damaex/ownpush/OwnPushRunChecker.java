@@ -1,4 +1,4 @@
-package net.damaex.OwnPush;
+package net.damaex.ownpush;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -13,7 +13,6 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 public class OwnPushRunChecker extends Worker {
-    private static String UNIQUE_WORK_NAME = "OwnPushWorker";
 
     public OwnPushRunChecker(@NonNull Context appContext, @NonNull WorkerParameters workerParams) {
         super(appContext, workerParams);
@@ -25,7 +24,7 @@ public class OwnPushRunChecker extends Worker {
         Log.d("ownPush", "RunChecker started");
         Constraints constraints = new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build();
         OneTimeWorkRequest oneTimeWorkRequest = new OneTimeWorkRequest.Builder(OwnPushRunner.class).setConstraints(constraints).build();
-        WorkManager.getInstance().beginUniqueWork(UNIQUE_WORK_NAME, ExistingWorkPolicy.KEEP, oneTimeWorkRequest).enqueue();
+        WorkManager.getInstance().beginUniqueWork(getApplicationContext().getString(R.string.UNIQUE_WORK_NAME), ExistingWorkPolicy.KEEP, oneTimeWorkRequest).enqueue();
 
         return Result.SUCCESS;
     }

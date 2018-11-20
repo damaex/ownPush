@@ -1,4 +1,4 @@
-package net.damaex.OwnPush;
+package net.damaex.ownpush;
 
 import com.google.gson.Gson;
 

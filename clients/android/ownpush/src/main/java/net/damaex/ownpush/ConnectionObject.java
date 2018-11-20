@@ -1,4 +1,4 @@
-package net.damaex.OwnPush;
+package net.damaex.ownpush;
 
 class ConnectionObject {
     public enum Purpose {

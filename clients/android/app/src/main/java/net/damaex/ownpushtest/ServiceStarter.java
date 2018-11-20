@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import net.damaex.OwnPush.OwnPush;
+import net.damaex.ownpush.OwnPush;
 
 public class ServiceStarter extends BroadcastReceiver {
     @Override
