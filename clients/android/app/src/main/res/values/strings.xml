@@ -2,4 +2,8 @@
     <string name="app_name">ownPushTest</string>
     <string name="btnRun">Start</string>
     <string name="btnStop">Start</string>
+
+    <string name="OwnPushHost">192.168.1.57</string>
+    <string name="OwnPushClientID">004917653193753</string>
+    <string name="OwnPushSecret">GFcQb7AMd6fs3TXlhG8tS8GwYYGPKPsx5rPtOZWtBGLj9BWZ7INw31Xe3BZQcCyc</string>
 </resources>

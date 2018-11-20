@@ -14,6 +14,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void createBackgroundService() {
-        OwnPush.start();
+        OwnPush.start(
+                getApplicationContext().getString(R.string.OwnPushHost),
+                getApplicationContext().getString(R.string.OwnPushClientID),
+                getApplicationContext().getString(R.string.OwnPushSecret)
+        );
     }
 }

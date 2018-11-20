@@ -9,6 +9,10 @@ import net.damaex.ownpush.OwnPush;
 public class ServiceStarter extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        OwnPush.start();
+        OwnPush.start(
+                context.getString(R.string.OwnPushHost),
+                context.getString(R.string.OwnPushClientID),
+                context.getString(R.string.OwnPushSecret)
+        );
     }
 }
