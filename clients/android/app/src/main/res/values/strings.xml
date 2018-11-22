@@ -3,7 +3,15 @@
     <string name="btnRun">Start</string>
     <string name="btnStop">Stop</string>
 
-    <string name="OwnPushHost">192.168.1.57</string>
-    <string name="OwnPushClientID">004917653193753</string>
-    <string name="OwnPushSecret">GFcQb7AMd6fs3TXlhG8tS8GwYYGPKPsx5rPtOZWtBGLj9BWZ7INw31Xe3BZQcCyc</string>
+    <string name="OwnPushHost" translatable="false">192.168.1.57</string>
+    <string name="OwnPushClientID" translatable="false">004917653193753</string>
+    <string name="OwnPushSecret" translatable="false">GFcQb7AMd6fs3TXlhG8tS8GwYYGPKPsx5rPtOZWtBGLj9BWZ7INw31Xe3BZQcCyc</string>
+
+    <string name="channel_name" translatable="false">ownPush</string>
+    <string name="channel_description" translatable="false">ownPush Notification Channel</string>
+
+    <string name="notification_message_title">Push received</string>
+    <string name="notification_status_title">Connection State changed</string>
+    <string name="notification_status_connected">connected</string>
+    <string name="notification_status_disconnected">disconnected</string>
 </resources>

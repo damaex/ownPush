@@ -18,7 +18,7 @@ import javax.net.ssl.TrustManagerFactory;
  * Creates an SSLSocketFactory instance for use with a custom CA, which would otherwise be considered "not trustworthy".
  * This can be fed into HttpsURLConnection, as well as networking libraries such as OkHttp's OkHttpClient.
  */
-public final class CustomSSLSocketFactory {
+final class CustomSSLSocketFactory {
 
     private CustomSSLSocketFactory() {
         throw new AssertionError();
@@ -31,7 +31,7 @@ public final class CustomSSLSocketFactory {
      * @param caRawFile	Raw resource file to the CA (in .crt or .cer format, for instance)
      * @return An SSLSocketFactory which trusts the provided CA when provided to network clients
      */
-    public static SSLSocketFactory create(Context context, @RawRes int caRawFile) {
+    static SSLSocketFactory create(Context context, @RawRes int caRawFile) {
         InputStream caInput = null;
         try {
             // Generate the CA Certificate from the raw resource file

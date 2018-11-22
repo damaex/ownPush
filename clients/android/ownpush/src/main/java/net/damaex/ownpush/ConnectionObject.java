@@ -30,6 +30,6 @@ class ConnectionObject {
         this.data = data;
     }
 
-    Purpose purpose;
-    String data;
+    final Purpose purpose;
+    final String data;
 }

@@ -8,25 +8,17 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.net.ssl.SSLSocketFactory;
 
-public class Client {
+class Client {
     private static final int OWNPUSH_PORT = 7951;
-    private String mHost;
-    private String mClientID;
-    private String mSecret;
+    private final String mHost;
+    private final String mClientID;
+    private final String mSecret;
     private boolean mIsRunning = false;
 
     private TcpClient mTcpClient = null;
-    private OwnPushHandler mPushHandler;
+    private final OwnPushHandler mPushHandler;
 
-    private SSLSocketFactory mSocketFactory;
-
-    Client(OwnPushHandler pushHandler, String host, String clientID, String secret) {
-        mPushHandler = pushHandler;
-        mHost = host;
-        mClientID = clientID;
-        mSecret = secret;
-        mSocketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
-    }
+    private final SSLSocketFactory mSocketFactory;
 
     Client(OwnPushHandler pushHandler, String host, String clientID, String secret, SSLSocketFactory socketFactory) {
         mPushHandler = pushHandler;
@@ -36,7 +28,7 @@ public class Client {
         mSocketFactory = socketFactory;
     }
 
-    public void start() {
+    void start() {
         mTcpClient = new TcpClient(new TcpClient.OnClientHandler() {
             @Override
             public void onMessageReceived(String message) {
@@ -47,13 +39,13 @@ public class Client {
             public void onClientConnected() {
                 mPushHandler.connectionStatus(true);
                 mIsRunning = true;
+                sendRequest();
             }
 
             @Override
             public void onClientDisconnected() {
                 mIsRunning = false;
                 mPushHandler.connectionStatus(false);
-                sendRequest();
             }
         }, mHost, OWNPUSH_PORT, mSocketFactory);
 
@@ -71,7 +63,7 @@ public class Client {
         mIsRunning = false;
     }
 
-    public boolean isRunning() {
+    boolean isRunning() {
         return mIsRunning;
     }
 
@@ -156,7 +148,7 @@ public class Client {
         return obj;
     }
 
-    public interface OwnPushHandler {
+    interface OwnPushHandler {
         void onPushReceived(String message);
 
         void connectionStatus(boolean connected);

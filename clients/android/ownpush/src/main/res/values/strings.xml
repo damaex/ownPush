@@ -1,3 +1,8 @@
 <resources>
-    <string name="UNIQUE_WORK_NAME">OwnPushWorker</string>
+    <string name="app_name" translatable="false">OwnPushLibrary</string>
+    <string name="UNIQUE_WORK_NAME" translatable="false">OwnPushWorker</string>
+    <string name="OWNPUSH_RECEIVER_FILTER" translatable="false">net.damaex.ownpush.PUSH_RECEIVED</string>
+    <string name="OWNPUSH_RECEIVER_TYPE" translatable="false">OWNPUSH_RECEIVER_TYPE</string>
+    <string name="OWNPUSH_RECEIVER_MESSAGE" translatable="false">OWNPUSH_RECEIVER_MESSAGE</string>
+    <string name="OWNPUSH_RECEIVER_CONNECTED" translatable="false">OWNPUSH_RECEIVER_CONNECTED</string>
 </resources>

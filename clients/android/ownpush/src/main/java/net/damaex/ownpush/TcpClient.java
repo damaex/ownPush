@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
@@ -17,11 +18,11 @@ class TcpClient {
     // message to send to the server
     private String mServerMessage;
     // sends message received notifications
-    private OnClientHandler mMessageListener = null;
+    private final OnClientHandler mMessageListener;
     // the host to connect to
-    private String mHost;
+    private final String mHost;
     // the port to connect to
-    private int mPort;
+    private final int mPort;
     // while this is true, the server will continue running
     private boolean mRun = false;
     // used to send messages
@@ -29,7 +30,9 @@ class TcpClient {
     // used to read messages from the server
     private BufferedReader mBufferIn;
 
-    private SSLSocketFactory mSocketFactory;
+    private static int CONNECT_TIMEOUT = 5000;
+
+    private final SSLSocketFactory mSocketFactory;
 
     /**
      * Constructor of the class. OnMessagedReceived listens for the messages received from server
@@ -75,12 +78,13 @@ class TcpClient {
 
         try {
             //here you must put your computer's IP address.
-            InetAddress serverAddr = InetAddress.getByName(mHost);
+            InetAddress serverAddress = InetAddress.getByName(mHost);
 
             Log.e("TCP Client", "C: Connecting...");
 
             //create a ssl socket to make the connection with the server
-            SSLSocket socket = (SSLSocket) mSocketFactory.createSocket(serverAddr, mPort);
+            SSLSocket socket = (SSLSocket) mSocketFactory.createSocket();
+            socket.connect(new InetSocketAddress(serverAddress, mPort), CONNECT_TIMEOUT);
 
             try {
 
@@ -122,6 +126,7 @@ class TcpClient {
         } catch (Exception e) {
 
             Log.e("TCP", "C: Error", e);
+            mMessageListener.onClientDisconnected();
 
         }
 
@@ -129,7 +134,7 @@ class TcpClient {
 
     /**
      * Declare the interface. The method messageReceived(String message) will must be implemented
-     * in the MyActivity class at on asynckTask doInBackground
+     * in the MyActivity class at on asyncTask doInBackground
      */
     public interface OnClientHandler {
         void onMessageReceived(String message);
