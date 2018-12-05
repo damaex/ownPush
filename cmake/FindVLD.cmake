@@ -65,4 +65,9 @@ else (VLD_INCLUDE_DIR AND VLD_LIBRARY)
     else (WIN32 AND MSVC)
         message(STATUS "FindVLD: only supported on msvc")
     endif (WIN32 AND MSVC)
+	
+	set(VLD_INCLUDE_DIR "")
+	set(VLD_LIBRARY "")
+	mark_as_advanced(VLD_INCLUDE_DIR VLD_LIBRARY)
+	
 endif (VLD_INCLUDE_DIR AND VLD_LIBRARY)
