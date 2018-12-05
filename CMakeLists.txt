@@ -18,7 +18,7 @@ if(WIN32)
 	set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 	
     # Visual leak detector
-    find_package(VLD QUIET)
+    find_package(VLD)
 	add_definitions(-D_WIN32_WINNT=0x0600)
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
